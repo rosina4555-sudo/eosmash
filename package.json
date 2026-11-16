@@ -1,5 +1,5 @@
 {
-  "name": "eosmash-tmp",
+  "name": "eosmash_web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/vue": "^1.73.0",
     "@tailwindcss/vite": "^4.3.5",
-    "lucide-vue-next": "^1.0.0",
     "tailwindcss": "^4.3.5",
     "vue": "^3.5.44",
     "vue-router": "^4.6.5"

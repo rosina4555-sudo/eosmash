@@ -1,0 +1,20 @@
+@theme {
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --color-midnight: #0b1020;
+  --color-deep-navy: #111a2e;
+  --color-elevated-navy: #17243b;
+  --color-electric-lime: #c6f36a;
+  --color-lime-hover: #b3e653;
+  --color-pure-white: #ffffff;
+  --color-soft-white: #e8edf4;
+  --color-muted-slate: #97a5b9;
+  --color-border: #26344c;
+  --color-secondary-border: #34445d;
+
+  --color-success: #54d69a;
+  --color-error: #ff7777;
+  --color-warning: #f4c66a;
+  --color-subtle-accent: #8b9bb5;
+}

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <linearGradient id="s-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="0.5" stop-color="#111a2e"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+    <linearGradient id="s-fade" gradientUnits="userSpaceOnUse" x1="80" y1="0" x2="1520" y2="0">
+      <stop offset="0" stop-color="#97a5b9" stop-opacity="0"/>
+      <stop offset="0.7" stop-color="#97a5b9" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#97a5b9" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="s-fade-lime" gradientUnits="userSpaceOnUse" x1="80" y1="0" x2="1520" y2="0">
+      <stop offset="0" stop-color="#c6f36a" stop-opacity="0"/>
+      <stop offset="0.75" stop-color="#c6f36a" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#c6f36a" stop-opacity="0.25"/>
+    </linearGradient>
+    <radialGradient id="s-vig" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0.55" stop-color="#0b1020" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0b1020" stop-opacity="0.85"/>
+    </radialGradient>
+    <filter id="s-glow" x="-30%" y="-300%" width="160%" height="700%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#s-bg)"/>
+  <polygon points="0,640 1600,380 1600,520 0,780" fill="#0e1630" opacity="0.7"/>
+  <polygon points="0,120 1600,-140 1600,-40 0,220" fill="#0e1630" opacity="0.55"/>
+
+  <g transform="rotate(-11 800 500)" stroke-linecap="round" fill="none">
+    <line x1="150" y1="452" x2="1460" y2="452" stroke="#c6f36a" stroke-width="26" opacity="0.28" filter="url(#s-glow)"/>
+    <line x1="150" y1="452" x2="1460" y2="452" stroke="url(#s-fade-lime)" stroke-width="5"/>
+    <line x1="240" y1="150" x2="1180" y2="150" stroke="url(#s-fade)" stroke-width="2.5"/>
+    <line x1="520" y1="212" x2="1420" y2="212" stroke="url(#s-fade)" stroke-width="1.5"/>
+    <line x1="120" y1="286" x2="980" y2="286" stroke="url(#s-fade)" stroke-width="3"/>
+    <line x1="640" y1="346" x2="1500" y2="346" stroke="url(#s-fade-lime)" stroke-width="2"/>
+    <line x1="320" y1="556" x2="1360" y2="556" stroke="url(#s-fade)" stroke-width="2"/>
+    <line x1="760" y1="618" x2="1480" y2="618" stroke="url(#s-fade)" stroke-width="3"/>
+    <line x1="180" y1="690" x2="1120" y2="690" stroke="url(#s-fade)" stroke-width="1.5"/>
+    <line x1="560" y1="762" x2="1520" y2="762" stroke="url(#s-fade-lime)" stroke-width="2.5"/>
+    <line x1="360" y1="846" x2="1300" y2="846" stroke="url(#s-fade)" stroke-width="2"/>
+    <line x1="820" y1="916" x2="1440" y2="916" stroke="url(#s-fade)" stroke-width="1.5"/>
+    <line x1="1180" y1="96" x2="1360" y2="96" stroke="#c6f36a" stroke-width="3" opacity="0.7"/>
+    <line x1="1260" y1="500" x2="1470" y2="500" stroke="#c6f36a" stroke-width="3" opacity="0.6"/>
+    <line x1="1090" y1="668" x2="1240" y2="668" stroke="#c6f36a" stroke-width="2.5" opacity="0.5"/>
+    <line x1="1330" y1="780" x2="1520" y2="780" stroke="#97a5b9" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <rect width="1600" height="1000" fill="url(#s-vig)"/>
+</svg>

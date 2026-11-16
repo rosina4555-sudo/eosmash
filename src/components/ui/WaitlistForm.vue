@@ -1,0 +1,275 @@
+<script setup lang="ts">
+import { computed, reactive, ref } from 'vue'
+
+type Status = 'idle' | 'loading' | 'success' | 'duplicate' | 'error' | 'network'
+
+const endpoint = import.meta.env.VITE_WAITLIST_ENDPOINT as string | undefined
+
+const status = ref<Status>('idle')
+const errorMessage = ref('')
+
+const form = reactive({
+  email: '',
+  country: 'Ghana',
+  preferred_game: '',
+  device: '',
+})
+
+const emailError = ref('')
+const emailTouched = ref(false)
+
+const gameOptions = [
+  { value: '', label: 'Select a category' },
+  { value: 'fighting', label: 'Fighting' },
+  { value: 'racing', label: 'Racing' },
+  { value: 'strategy', label: 'Strategy' },
+  { value: 'arcade', label: 'Arcade' },
+  { value: 'other', label: 'Other' },
+  { value: 'not_sure', label: 'Not sure yet' },
+]
+
+const deviceOptions = [
+  { value: '', label: 'Select a device' },
+  { value: 'mobile', label: 'Mobile' },
+  { value: 'pc', label: 'PC' },
+  { value: 'console', label: 'Console' },
+  { value: 'multiple', label: 'Multiple devices' },
+]
+
+const isValidEmail = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()))
+const isLoading = computed(() => status.value === 'loading')
+const isSuccess = computed(() => status.value === 'success')
+
+function validateEmail() {
+  emailTouched.value = true
+  if (!form.email.trim()) {
+    emailError.value = 'Email address is required.'
+    return false
+  }
+  if (!isValidEmail.value) {
+    emailError.value = 'Enter a valid email address.'
+    return false
+  }
+  emailError.value = ''
+  return true
+}
+
+async function handleSubmit() {
+  if (isLoading.value || isSuccess.value) return
+
+  status.value = 'idle'
+  errorMessage.value = ''
+
+  if (!validateEmail()) return
+
+  if (!endpoint) {
+    status.value = 'error'
+    errorMessage.value = 'Signups are temporarily down. Give it another try in a bit.'
+    return
+  }
+
+  status.value = 'loading'
+
+  try {
+    const payload: Record<string, string> = { email: form.email.trim().toLowerCase() }
+    if (form.country.trim()) payload.country = form.country.trim()
+    if (form.preferred_game) payload.preferred_game = form.preferred_game
+    if (form.device) payload.device = form.device
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    if (response.status === 409) {
+      status.value = 'duplicate'
+      return
+    }
+
+    if (!response.ok) {
+      status.value = 'error'
+      errorMessage.value = 'That did not work. Please try again.'
+      return
+    }
+
+    status.value = 'success'
+  } catch {
+    status.value = 'network'
+    errorMessage.value = 'Connection lost. Check your internet and try again.'
+  }
+}
+</script>
+
+<template>
+  <div class="w-full">
+    <form v-if="!isSuccess" novalidate class="flex flex-col gap-5" @submit.prevent="handleSubmit">
+      <div>
+        <label
+          for="waitlist-email"
+          class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
+        >
+          Email address <span class="text-electric-lime" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="waitlist-email"
+          v-model="form.email"
+          type="email"
+          name="email"
+          autocomplete="email"
+          required
+          placeholder="you@example.com"
+          :aria-invalid="!!emailError"
+          :aria-describedby="emailError ? 'waitlist-email-error' : undefined"
+          class="h-[52px] w-full rounded-[10px] bg-midnight px-4 text-base text-pure-white placeholder:text-muted-slate/60 ring-1 ring-inset ring-border transition-all duration-200 focus:bg-midnight focus:ring-electric-lime focus:outline-none"
+          @blur="validateEmail"
+          @input="emailTouched && validateEmail()"
+        />
+        <p v-if="emailError" id="waitlist-email-error" role="alert" class="mt-2 text-sm text-error">
+          {{ emailError }}
+        </p>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label
+            for="waitlist-country"
+            class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
+          >
+            Country
+          </label>
+          <input
+            id="waitlist-country"
+            v-model="form.country"
+            type="text"
+            name="country"
+            autocomplete="country-name"
+            placeholder="Ghana"
+            class="h-[52px] w-full rounded-[10px] bg-midnight px-4 text-base text-pure-white placeholder:text-muted-slate/60 ring-1 ring-inset ring-border transition-all duration-200 focus:ring-electric-lime focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label
+            for="waitlist-game"
+            class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
+          >
+            Preferred game
+          </label>
+          <select
+            id="waitlist-game"
+            v-model="form.preferred_game"
+            name="preferred_game"
+            class="h-[52px] w-full appearance-none rounded-[10px] bg-midnight px-4 text-base text-pure-white ring-1 ring-inset ring-border transition-all duration-200 focus:ring-electric-lime focus:outline-none"
+          >
+            <option v-for="opt in gameOptions" :key="opt.value" :value="opt.value">
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label
+          for="waitlist-device"
+          class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
+        >
+          Gaming device
+        </label>
+        <select
+          id="waitlist-device"
+          v-model="form.device"
+          name="device"
+          class="h-[52px] w-full appearance-none rounded-[10px] bg-midnight px-4 text-base text-pure-white ring-1 ring-inset ring-border transition-all duration-200 focus:ring-electric-lime focus:outline-none"
+        >
+          <option v-for="opt in deviceOptions" :key="opt.value" :value="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+      </div>
+
+      <p
+        v-if="status === 'error' || status === 'network' || status === 'duplicate'"
+        role="alert"
+        class="rounded-[10px] bg-error/10 px-4 py-3 text-sm text-error"
+      >
+        {{
+          status === 'duplicate'
+            ? 'This email is already on the list. You are good to go!'
+            : errorMessage
+        }}
+      </p>
+
+      <button
+        type="submit"
+        :disabled="isLoading"
+        class="inline-flex h-[52px] min-w-[200px] items-center justify-center gap-2.5 rounded-[10px] bg-electric-lime px-8 text-sm font-semibold tracking-wide text-midnight uppercase transition-colors duration-200 hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        <svg
+          v-if="isLoading"
+          class="h-4 w-4 animate-spin"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
+        </svg>
+        {{ isLoading ? 'Joining…' : 'Join the waitlist' }}
+      </button>
+
+      <p class="text-[13px] leading-relaxed text-muted-slate">
+        By joining, you agree to get product and launch updates from Eosmash. Unsubscribe
+        whenever you want.
+        <a
+          href="/privacy"
+          class="text-soft-white underline underline-offset-2 hover:text-electric-lime"
+        >
+          Privacy Policy
+        </a>
+      </p>
+    </form>
+
+    <div
+      v-else
+      role="status"
+      aria-live="polite"
+      class="rounded-[12px] bg-success/10 p-6 md:p-8"
+    >
+      <div class="mb-3 flex items-center gap-3">
+        <span
+          class="flex h-9 w-9 items-center justify-center rounded-full bg-success/20 text-success"
+          aria-hidden="true"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M5 13l4 4L19 7"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+        <h3 class="text-xl font-semibold tracking-tight text-pure-white md:text-2xl">
+          You're on the list!
+        </h3>
+      </div>
+      <p class="max-w-md text-[15px] leading-relaxed text-muted-slate">
+        You're in. We will keep you posted as launch gets closer.
+      </p>
+    </div>
+  </div>
+</template>
