@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue'
 type Status = 'idle' | 'loading' | 'success' | 'duplicate' | 'error' | 'network'
 
 const endpoint = import.meta.env.VITE_WAITLIST_ENDPOINT as string | undefined
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
 
 const status = ref<Status>('idle')
 const errorMessage = ref('')
@@ -76,9 +77,18 @@ async function handleSubmit() {
     if (form.preferred_game) payload.preferred_game = form.preferred_game
     if (form.device) payload.device = form.device
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    }
+    if (anonKey) {
+      headers.apikey = anonKey
+      headers.Authorization = `Bearer ${anonKey}`
+    }
+
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     })
 
