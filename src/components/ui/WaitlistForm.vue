@@ -243,12 +243,12 @@ async function handleSubmit() {
       <p class="text-[13px] leading-relaxed text-muted-slate">
         By joining, you agree to get product and launch updates from Eosmash. Unsubscribe
         whenever you want.
-        <a
-          href="/privacy"
+        <RouterLink
+          to="/privacy"
           class="text-soft-white underline underline-offset-2 hover:text-electric-lime"
         >
           Privacy Policy
-        </a>
+        </RouterLink>
       </p>
     </form>
 

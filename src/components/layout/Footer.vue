@@ -17,9 +17,9 @@ const navLinks = [
     <div class="mx-auto max-w-[1280px] px-5 py-16 md:px-8 md:py-20 lg:px-16">
       <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
         <div class="lg:col-span-5">
-          <a href="/" class="group inline-block" aria-label="Eosmash home">
+          <RouterLink to="/" class="group inline-block" aria-label="Eosmash home">
             <BrandLogo :mark-size="30" text-class="text-2xl" />
-          </a>
+          </RouterLink>
           <p class="mt-4 max-w-sm text-[15px] leading-relaxed text-muted-slate">
             A new home for competitive skill-based gaming. Built in Ghana for players across Africa
             and beyond.
@@ -48,20 +48,20 @@ const navLinks = [
           </h3>
           <ul class="space-y-3.5">
             <li>
-              <a
-                href="/privacy"
+              <RouterLink
+                to="/privacy"
                 class="text-sm text-muted-slate transition-colors hover:text-electric-lime"
               >
                 Privacy Policy
-              </a>
+              </RouterLink>
             </li>
             <li>
-              <a
-                href="/terms"
+              <RouterLink
+                to="/terms"
                 class="text-sm text-muted-slate transition-colors hover:text-electric-lime"
               >
                 Terms of Service
-              </a>
+              </RouterLink>
             </li>
           </ul>
         </nav>

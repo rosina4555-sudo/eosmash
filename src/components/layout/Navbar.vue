@@ -43,9 +43,9 @@ onUnmounted(() => {
       class="mx-auto flex h-[68px] max-w-[1280px] items-center justify-between px-5 md:h-20 md:px-8 lg:px-16"
       aria-label="Main"
     >
-      <a href="/" class="group" aria-label="Eosmash home">
+      <RouterLink to="/" class="group" aria-label="Eosmash home">
         <BrandLogo :mark-size="26" text-class="text-[22px] md:text-2xl" />
-      </a>
+      </RouterLink>
 
       <div class="hidden items-center gap-10 md:flex">
         <a
