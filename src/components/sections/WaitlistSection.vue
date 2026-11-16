@@ -27,16 +27,16 @@ const { setRef, isVisible, style } = useReveal()
 
           <div class="mt-4">
             <div class="mb-5 flex items-center gap-3">
-              <span class="h-px w-8 bg-electric-lime" aria-hidden="true" />
+              <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
               <p
-                class="text-[11px] font-semibold uppercase tracking-[0.28em] text-electric-lime md:text-xs"
+                class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
               >
                 Early access
               </p>
             </div>
             <h2
               id="waitlist-heading"
-              class="text-[32px] font-bold leading-[1.05] tracking-[-0.02em] text-pure-white md:text-[40px]"
+              class="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[40px]"
             >
               Join the waitlist.
             </h2>

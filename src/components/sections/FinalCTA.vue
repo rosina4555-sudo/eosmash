@@ -20,7 +20,7 @@ function scrollToWaitlist() {
         <div class="mb-6 flex items-center justify-center gap-3">
           <span class="h-px w-8 bg-electric-lime" aria-hidden="true" />
           <p
-            class="text-[11px] font-semibold uppercase tracking-[0.28em] text-electric-lime md:text-xs"
+            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
           >
             Last chance
           </p>
@@ -28,7 +28,7 @@ function scrollToWaitlist() {
         </div>
         <h2
           id="final-cta-heading"
-          class="text-[34px] font-bold leading-[1.05] tracking-[-0.02em] text-pure-white md:text-[48px]"
+          class="text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[48px]"
         >
           Think you have what it takes?
         </h2>

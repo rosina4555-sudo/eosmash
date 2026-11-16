@@ -69,9 +69,9 @@ function scrollTo(id: string) {
           :class="{ 'is-visible': eyebrowVisible }"
           :style="eyebrowStyle"
         >
-          <span class="h-px w-10 bg-electric-lime" aria-hidden="true" />
+          <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
           <p
-            class="text-[11px] font-semibold uppercase tracking-[0.28em] text-electric-lime md:text-xs"
+            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
           >
             The next era of competitive gaming
           </p>
@@ -80,7 +80,7 @@ function scrollTo(id: string) {
         <h1
           id="hero-heading"
           :ref="titleRef"
-          class="text-[42px] font-bold leading-[0.98] tracking-[-0.03em] text-pure-white md:text-[64px] lg:text-[76px]"
+          class="text-[38px] font-bold leading-[1.02] tracking-[-0.03em] text-pure-white md:text-[64px] lg:text-[76px]"
           :class="{ 'is-visible': titleVisible }"
           :style="titleStyle"
         >
