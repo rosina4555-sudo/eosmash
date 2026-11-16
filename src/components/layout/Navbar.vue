@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import BrandLogo from '../ui/BrandLogo.vue'
 
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
@@ -42,12 +43,8 @@ onUnmounted(() => {
       class="mx-auto flex h-[68px] max-w-[1280px] items-center justify-between px-5 md:h-20 md:px-8 lg:px-16"
       aria-label="Main"
     >
-      <a
-        href="/"
-        class="font-heading text-[22px] font-bold tracking-[-0.03em] text-pure-white transition-colors hover:text-electric-lime md:text-2xl"
-        aria-label="Eosmash home"
-      >
-        eos<span class="text-electric-lime">mash</span>
+      <a href="/" class="group" aria-label="Eosmash home">
+        <BrandLogo :mark-size="26" text-class="text-[22px] md:text-2xl" />
       </a>
 
       <div class="hidden items-center gap-10 md:flex">
