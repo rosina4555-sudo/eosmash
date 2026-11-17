@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useReveal } from '../../composables/useReveal'
+import { trackEvent } from '../../composables/useAnalytics'
 
 const { setRef, isVisible, style } = useReveal()
 
 function scrollToWaitlist() {
+  trackEvent('cta_click', { location: 'final_cta' })
   document.querySelector('#waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 </script>

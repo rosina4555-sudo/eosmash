@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useReveal, useRevealGroup } from '../../composables/useReveal'
+import { trackEvent } from '../../composables/useAnalytics'
 
 const slides = [
   '/images/art-speed.svg',
@@ -33,6 +34,11 @@ const { setRef: statsRef, visible: statsVisible, itemStyle } = useRevealGroup(3,
 
 function scrollTo(id: string) {
   document.querySelector(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function onHeroWaitlistClick() {
+  trackEvent('cta_click', { location: 'hero_primary' })
+  scrollTo('#waitlist')
 }
 </script>
 
@@ -116,7 +122,7 @@ function scrollTo(id: string) {
           <button
             type="button"
             class="cta-sweep inline-flex h-13 min-w-[200px] items-center justify-center bg-electric-lime px-8 text-sm font-semibold tracking-wide text-midnight uppercase transition-colors duration-200 hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime md:h-14 md:text-base"
-            @click="scrollTo('#waitlist')"
+            @click="onHeroWaitlistClick"
           >
             Join the waitlist
           </button>

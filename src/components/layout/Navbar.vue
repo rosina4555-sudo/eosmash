@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import BrandLogo from '../ui/BrandLogo.vue'
+import { trackEvent } from '../../composables/useAnalytics'
 
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
@@ -21,6 +22,7 @@ function closeMobileMenu() {
 
 function scrollToWaitlist() {
   closeMobileMenu()
+  trackEvent('cta_click', { location: 'navbar' })
   document.querySelector('#waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 

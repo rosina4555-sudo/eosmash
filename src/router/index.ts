@@ -24,7 +24,7 @@ const router = createRouter({
           heading: 'Privacy Policy',
           description:
             "We're putting the finishing touches on this page. It will be published here before we start onboarding players from the waitlist.",
-          note: 'Your waitlist details are only used to send you launch and product updates, and you can unsubscribe at any time.',
+          note: 'In short: we collect anonymous traffic stats through Umami and, only if you accept, session recordings through Microsoft Clarity. Your waitlist details are only used to send you launch and product updates.',
         },
       },
     },

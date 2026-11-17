@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
+import { trackEvent } from '../../composables/useAnalytics'
 
 type Status = 'idle' | 'loading' | 'success' | 'duplicate' | 'error' | 'network'
 
@@ -61,11 +62,18 @@ async function handleSubmit() {
   status.value = 'idle'
   errorMessage.value = ''
 
-  if (!validateEmail()) return
+  if (!validateEmail()) {
+    trackEvent('form_field_error', {
+      field: 'email',
+      reason: form.email.trim() ? 'invalid' : 'required',
+    })
+    return
+  }
 
   if (!endpoint) {
     status.value = 'error'
     errorMessage.value = 'Signups are temporarily down. Give it another try in a bit.'
+    trackEvent('waitlist_error', { reason: 'config' })
     return
   }
 
@@ -94,19 +102,27 @@ async function handleSubmit() {
 
     if (response.status === 409) {
       status.value = 'duplicate'
+      trackEvent('waitlist_duplicate')
       return
     }
 
     if (!response.ok) {
       status.value = 'error'
       errorMessage.value = 'That did not work. Please try again.'
+      trackEvent('waitlist_error', { reason: 'server', status: response.status })
       return
     }
 
     status.value = 'success'
+    trackEvent('waitlist_signup', {
+      country: form.country.trim() || 'unspecified',
+      preferred_game: form.preferred_game || 'unspecified',
+      device: form.device || 'unspecified',
+    })
   } catch {
     status.value = 'network'
     errorMessage.value = 'Connection lost. Check your internet and try again.'
+    trackEvent('waitlist_error', { reason: 'network' })
   }
 }
 </script>
