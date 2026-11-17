@@ -14,6 +14,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/arena',
+      name: 'arena',
+      component: () => import('../views/ArenaView.vue'),
+      meta: {
+        title: 'Eosmash Arena',
+        robots: 'noindex',
+      },
+    },
+    {
       path: '/privacy',
       name: 'privacy',
       component: PlaceholderView,
@@ -77,6 +86,19 @@ const router = createRouter({
 
 router.afterEach((to) => {
   document.title = (to.meta.title as string) || 'Eosmash | Competitive Gaming Is Coming'
+
+  const robotsContent = to.meta.robots as string | undefined
+  let robotsMeta = document.querySelector('meta[name="robots"]')
+  if (robotsContent) {
+    if (!robotsMeta) {
+      robotsMeta = document.createElement('meta')
+      robotsMeta.setAttribute('name', 'robots')
+      document.head.appendChild(robotsMeta)
+    }
+    robotsMeta.setAttribute('content', robotsContent)
+  } else if (robotsMeta) {
+    robotsMeta.remove()
+  }
 })
 
 export default router
