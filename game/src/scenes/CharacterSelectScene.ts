@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import type { AIDifficulty } from '../ai/DifficultyProfiles'
 import { FIGHTERS } from '../config/characters.config'
-import { GAME_HEIGHT, GAME_WIDTH } from '../config/game.config'
+import { GAME_HEIGHT, GAME_WIDTH, IS_TOUCH } from '../config/game.config'
 import { generatePlaceholderArt } from '../textures/placeholderArt'
 import { audio } from '../systems/AudioManager'
 import { loadSettings, saveSettings } from '../systems/SettingsManager'
@@ -79,27 +79,40 @@ export class CharacterSelectScene extends Phaser.Scene {
     this.cardRedraws = []
     this.difficultyRedraws = []
 
-    createEyebrow(this, GAME_WIDTH / 2, 44, this.mode === 'practice' ? 'PRACTICE MODE' : 'QUICK FIGHT')
+    createEyebrow(
+      this,
+      GAME_WIDTH / 2,
+      IS_TOUCH ? 112 : 44,
+      this.mode === 'practice' ? 'PRACTICE MODE' : 'QUICK FIGHT',
+    )
 
     const title = this.add
-      .text(GAME_WIDTH / 2, 84, 'SELECT YOUR FIGHTER', uiText('44px', '#FFFFFF', true))
+      .text(
+        GAME_WIDTH / 2,
+        IS_TOUCH ? 155 : 84,
+        'SELECT YOUR FIGHTER',
+        uiText('44px', '#FFFFFF', true),
+      )
       .setOrigin(0.5)
     tracked(title, 4)
 
     this.buildCard(CARDS[0], 430)
     this.buildCard(CARDS[1], 850)
 
-    this.add
-      .text(GAME_WIDTH / 2, 556, 'More fighters coming soon.', uiText('14px', '#97A5B9'))
-      .setOrigin(0.5)
-      .setAlpha(0.7)
-
-    if (this.mode === 'quick') {
-      this.buildDifficultyRow(596)
+    if (!IS_TOUCH) {
+      this.add
+        .text(GAME_WIDTH / 2, 556, 'More fighters coming soon.', uiText('14px', '#97A5B9'))
+        .setOrigin(0.5)
+        .setAlpha(0.7)
     }
 
-    createButton(this, 210, 668, 'BACK', () => this.scene.start('menu'), { width: 240 })
-    this.fightButton = createButton(this, 1070, 668, 'FIGHT', () => this.startFight(), {
+    if (this.mode === 'quick') {
+      this.buildDifficultyRow(IS_TOUCH ? 515 : 596)
+    }
+
+    const buttonY = IS_TOUCH ? 578 : 668
+    createButton(this, 210, buttonY, 'BACK', () => this.scene.start('menu'), { width: 240 })
+    this.fightButton = createButton(this, 1070, buttonY, 'FIGHT', () => this.startFight(), {
       width: 300,
       primary: true,
       letterSpacing: 5,
@@ -120,14 +133,22 @@ export class CharacterSelectScene extends Phaser.Scene {
   }
 
   private buildCard(card: CardData, cx: number) {
-    const cy = 330
+    const cy = IS_TOUCH ? 300 : 330
+    const cardH = IS_TOUCH ? 360 : CARD_H
+    const portraitY = IS_TOUCH ? cy - 115 : cy - 126
+    const portraitScale = IS_TOUCH ? 1.25 : 2.4
+    const nameY = IS_TOUCH ? cy - 26 : cy - 44
+    const styleY = IS_TOUCH ? cy + 4 : cy - 12
+    const descY = IS_TOUCH ? cy + 28 : cy + 20
+    const attrStartY = IS_TOUCH ? cy + 86 : cy + 108
+    const attrStep = IS_TOUCH ? 25 : 32
     const def = FIGHTERS[card.key]
 
     const panel = this.add.graphics()
     const accent = this.add.graphics()
     const badgeBg = this.add.graphics()
     const badgeText = this.add
-      .text(cx + CARD_W / 2 - 24, cy - CARD_H / 2 + 26, 'SELECTED', uiText('12px', '#0B1020', true))
+      .text(cx + CARD_W / 2 - 24, cy - cardH / 2 + 26, 'SELECTED', uiText('12px', '#0B1020', true))
       .setOrigin(1, 0.5)
       .setVisible(false)
     tracked(badgeText, 2)
@@ -135,43 +156,43 @@ export class CharacterSelectScene extends Phaser.Scene {
     const drawPanel = (selected: boolean, hover: boolean) => {
       panel.clear()
       panel.fillStyle(UI.panel, 1)
-      panel.fillRoundedRect(cx - CARD_W / 2, cy - CARD_H / 2, CARD_W, CARD_H, 14)
+      panel.fillRoundedRect(cx - CARD_W / 2, cy - cardH / 2, CARD_W, cardH, 14)
       panel.lineStyle(selected ? 3 : 2, selected ? UI.lime : hover ? UI.lime : UI.line, 1)
-      panel.strokeRoundedRect(cx - CARD_W / 2, cy - CARD_H / 2, CARD_W, CARD_H, 14)
+      panel.strokeRoundedRect(cx - CARD_W / 2, cy - cardH / 2, CARD_W, cardH, 14)
 
       accent.clear()
       badgeBg.clear()
       badgeText.setVisible(selected)
       if (selected) {
         accent.fillStyle(UI.lime, 1)
-        accent.fillRoundedRect(cx - CARD_W / 2 + 10, cy - CARD_H / 2 + 10, CARD_W - 20, 6, 3)
+        accent.fillRoundedRect(cx - CARD_W / 2 + 10, cy - cardH / 2 + 10, CARD_W - 20, 6, 3)
         badgeBg.fillStyle(UI.lime, 1)
-        badgeBg.fillRoundedRect(cx + CARD_W / 2 - 112, cy - CARD_H / 2 + 14, 96, 24, 12)
+        badgeBg.fillRoundedRect(cx + CARD_W / 2 - 112, cy - cardH / 2 + 14, 96, 24, 12)
       }
     }
     drawPanel(false, false)
     this.cardRedraws.push(() => drawPanel(this.selected === card.key, false))
 
-    const portrait = this.add.sprite(cx, cy - 126, def.key).setScale(2.4)
+    const portrait = this.add.sprite(cx, portraitY, def.key).setScale(portraitScale)
     portrait.setFlipX(false)
 
     const name = this.add
-      .text(cx, cy - 44, card.title, uiText('36px', '#FFFFFF', true))
+      .text(cx, nameY, card.title, uiText('36px', '#FFFFFF', true))
       .setOrigin(0.5)
     tracked(name, 6)
 
     const style = this.add
-      .text(cx, cy - 12, card.style, uiText('14px', '#C6F36A', true))
+      .text(cx, styleY, card.style, uiText('14px', '#C6F36A', true))
       .setOrigin(0.5)
     tracked(style, 4)
 
     const desc = this.add
-      .text(cx, cy + 20, card.description, uiText('14px', '#97A5B9'))
+      .text(cx, descY, card.description, uiText('14px', '#97A5B9'))
       .setOrigin(0.5, 0)
       .setAlign('center')
     desc.setWordWrapWidth(CARD_W - 56)
 
-    let attrY = cy + 108
+    let attrY = attrStartY
     for (const attr of card.attributes) {
       const label = this.add
         .text(cx - 136, attrY, attr.label, uiText('12px', '#97A5B9', true))
@@ -192,11 +213,11 @@ export class CharacterSelectScene extends Phaser.Scene {
         .text(cx + 168, attrY, `${attr.value}`, uiText('18px', '#FFFFFF', true))
         .setOrigin(0, 0.5)
 
-      attrY += 32
+      attrY += attrStep
     }
 
     const hit = this.add
-      .rectangle(cx, cy, CARD_W, CARD_H, 0x000000, 0)
+      .rectangle(cx, cy, CARD_W, cardH, 0x000000, 0)
       .setInteractive({ useHandCursor: true })
     hit.on('pointerover', () => drawPanel(this.selected === card.key, true))
     hit.on('pointerout', () => drawPanel(this.selected === card.key, false))

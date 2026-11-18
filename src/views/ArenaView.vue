@@ -8,10 +8,21 @@ const showRotate = ref(false)
 let game: import('phaser').Game | null = null
 let coarseMq: MediaQueryList | null = null
 let portraitMq: MediaQueryList | null = null
+let lockAttempted = false
 
 function syncMedia() {
   isTouch.value = coarseMq?.matches ?? false
   showRotate.value = isTouch.value && (portraitMq?.matches ?? false)
+}
+
+function tryLockOrientation() {
+  if (lockAttempted || !isTouch.value) return
+  lockAttempted = true
+  try {
+    screen.orientation.lock('landscape').catch(() => {})
+  } catch {
+    // Unsupported (most desktop browsers, iOS Safari) — rotate prompt stays authoritative.
+  }
 }
 
 onMounted(() => {
@@ -20,6 +31,7 @@ onMounted(() => {
   coarseMq.addEventListener('change', syncMedia)
   portraitMq.addEventListener('change', syncMedia)
   syncMedia()
+  window.addEventListener('pointerdown', tryLockOrientation)
 
   if (host.value) {
     game = createArenaGame(host.value)
@@ -29,6 +41,7 @@ onMounted(() => {
 onUnmounted(() => {
   coarseMq?.removeEventListener('change', syncMedia)
   portraitMq?.removeEventListener('change', syncMedia)
+  window.removeEventListener('pointerdown', tryLockOrientation)
   game?.destroy(true)
   game = null
 })
@@ -50,18 +63,7 @@ onUnmounted(() => {
       </p>
     </header>
 
-    <div ref="host" class="relative min-h-0 w-full flex-1">
-      <div
-        v-if="showRotate"
-        class="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center"
-      >
-        <p
-          class="rounded-full border border-border bg-deep-navy/95 px-4 py-2 text-[11px] font-bold tracking-[0.18em] text-electric-lime uppercase"
-        >
-          ↻ Rotate your device to play
-        </p>
-      </div>
-    </div>
+    <div ref="host" class="relative min-h-0 w-full flex-1"></div>
 
     <footer
       v-if="!isTouch"
@@ -73,5 +75,18 @@ onUnmounted(() => {
         A/D move · W jump · J light · K heavy · L block · Esc pause · R rematch
       </p>
     </footer>
+
+    <div
+      v-if="showRotate"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-midnight px-8 text-center"
+    >
+      <span class="text-6xl leading-none text-electric-lime" aria-hidden="true">↻</span>
+      <h1 class="text-lg font-bold tracking-[0.2em] text-white uppercase">
+        Rotate your device
+      </h1>
+      <p class="max-w-xs text-sm leading-relaxed text-muted-slate">
+        Turn on auto-rotate, then hold your phone sideways to play.
+      </p>
+    </div>
   </div>
 </template>

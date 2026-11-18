@@ -3,11 +3,6 @@ import type { TouchAction, TouchController } from '../input/TouchController'
 import { audio } from '../systems/AudioManager'
 import { UI, uiText } from './uiHelpers'
 
-export function isTouchDevice(): boolean {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(pointer: coarse)').matches
-}
-
 interface TouchButton {
   action: TouchAction
   setPressed: (on: boolean) => void
@@ -24,12 +19,12 @@ export class MobileControls {
     this.touch = touch
     this.container = scene.add.container(0, 0)
 
-    this.buildActionButton(120, 610, 58, { arrow: 'left' }, 'left')
-    this.buildActionButton(255, 610, 58, { arrow: 'right' }, 'right')
-    this.buildActionButton(1045, 495, 55, { text: 'JUMP' }, 'jump')
-    this.buildActionButton(1045, 625, 55, { text: 'BLOCK' }, 'block')
-    this.buildActionButton(1170, 625, 55, { text: 'LIGHT' }, 'light')
-    this.buildActionButton(1170, 495, 55, { text: 'HEAVY' }, 'heavy')
+    this.buildActionButton(300, 545, 44, { arrow: 'left' }, 'left')
+    this.buildActionButton(430, 545, 44, { arrow: 'right' }, 'right')
+    this.buildActionButton(880, 425, 42, { text: 'JUMP' }, 'jump')
+    this.buildActionButton(880, 545, 42, { text: 'BLOCK' }, 'block')
+    this.buildActionButton(1010, 545, 42, { text: 'LIGHT' }, 'light')
+    this.buildActionButton(1010, 425, 42, { text: 'HEAVY' }, 'heavy')
 
     this.buildPauseButton(onPause)
 
@@ -80,7 +75,7 @@ export class MobileControls {
       glyph = tri
     } else {
       const text = scene.add
-        .text(0, 0, visual.text ?? '', uiText('15px', '#FFFFFF', true))
+        .text(0, 0, visual.text ?? '', uiText('14px', '#FFFFFF', true))
         .setOrigin(0.5)
       text.setLetterSpacing(2)
       drawGlyph = (pressed) => text.setColor(pressed ? '#0B1020' : '#FFFFFF')
@@ -136,6 +131,6 @@ export class MobileControls {
       onPause()
     })
 
-    this.container.add(scene.add.container(1222, 152, [bg, hit]))
+    this.container.add(scene.add.container(1055, 275, [bg, hit]))
   }
 }

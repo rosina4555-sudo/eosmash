@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import { AIController } from '../ai/AIController'
 import { getHitboxRect, getHurtboxRect, resolveHit, type HitResult } from '../combat/CombatSystem'
 import { FIGHTERS } from '../config/characters.config'
-import { GAME_HEIGHT, GAME_WIDTH, GROUND_Y } from '../config/game.config'
+import { GAME_HEIGHT, GAME_WIDTH, GROUND_Y, IS_TOUCH, WORLD_ZOOM } from '../config/game.config'
 import { Fighter, type FighterPhase } from '../entities/Fighter'
 import { emptyInput, mergeInputs, type InputSnapshot } from '../input/InputSnapshot'
 import { KeyboardController } from '../input/KeyboardController'
@@ -11,7 +11,7 @@ import { audio } from '../systems/AudioManager'
 import { MatchManager, type MatchMode } from '../systems/MatchManager'
 import { loadSettings } from '../systems/SettingsManager'
 import { generatePlaceholderArt } from '../textures/placeholderArt'
-import { MobileControls, isTouchDevice } from '../ui/MobileControls'
+import { MobileControls } from '../ui/MobileControls'
 import {
   UI,
   createButton,
@@ -82,6 +82,7 @@ export class ArenaScene extends Phaser.Scene {
 
   create(data?: MatchSceneData) {
     generatePlaceholderArt(this)
+    if (IS_TOUCH) this.cameras.main.setZoom(WORLD_ZOOM)
     this.drawBackdrop()
     this.drawGround()
 
@@ -146,58 +147,63 @@ export class ArenaScene extends Phaser.Scene {
 
     this.debugGfx = this.add.graphics()
     this.playerBar = this.createHealthBar(
-      36,
-      30,
+      IS_TOUCH ? 210 : 36,
+      IS_TOUCH ? 132 : 30,
       UI.lime,
       false,
       FIGHTERS[this.playerKey].name.toUpperCase(),
+      IS_TOUCH ? 340 : 460,
     )
     this.opponentBar = this.createHealthBar(
-      GAME_WIDTH - 36,
-      30,
+      IS_TOUCH ? 1070 : GAME_WIDTH - 36,
+      IS_TOUCH ? 132 : 30,
       UI.danger,
       true,
       FIGHTERS[this.opponentKey].name.toUpperCase(),
+      IS_TOUCH ? 340 : 460,
     )
 
+    const plateY = IS_TOUCH ? 126 : 18
     const plate = this.add.graphics()
     plate.fillStyle(UI.deep, 1)
-    plate.fillRoundedRect(GAME_WIDTH / 2 - 72, 18, 144, 96, 10)
+    plate.fillRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 10)
     plate.lineStyle(2, UI.line, 1)
-    plate.strokeRoundedRect(GAME_WIDTH / 2 - 72, 18, 144, 96, 10)
+    plate.strokeRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 10)
     plate.fillStyle(UI.lime, 1)
-    plate.fillRect(GAME_WIDTH / 2 - 36, 110, 72, 4)
+    plate.fillRect(GAME_WIDTH / 2 - 36, plateY + 92, 72, 4)
 
     const timeLabel = this.add
-      .text(GAME_WIDTH / 2, 38, 'TIME', uiText('12px', '#97A5B9', true))
+      .text(GAME_WIDTH / 2, plateY + 20, 'TIME', uiText('12px', '#97A5B9', true))
       .setOrigin(0.5)
     tracked(timeLabel, 4)
 
     this.timerText = this.add
-      .text(GAME_WIDTH / 2, 74, '90', uiText('46px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, plateY + 56, '90', uiText('46px', '#FFFFFF', true))
       .setOrigin(0.5)
     this.subText = this.add
-      .text(GAME_WIDTH / 2, 128, '', uiText('13px', '#97A5B9', true))
+      .text(GAME_WIDTH / 2, plateY + 110, '', uiText('13px', '#97A5B9', true))
       .setOrigin(0.5, 0)
     tracked(this.subText, 3)
 
+    const bigTextY = IS_TOUCH ? 330 : 310
     this.countdownText = this.add
-      .text(GAME_WIDTH / 2, 310, '3', uiText('130px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, bigTextY, '3', uiText('130px', '#C6F36A', true))
       .setOrigin(0.5)
     this.countdownText.setStroke('#05070f', 12)
 
     this.goText = this.add
-      .text(GAME_WIDTH / 2, 310, 'GO!', uiText('130px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, bigTextY, 'GO!', uiText('130px', '#C6F36A', true))
       .setOrigin(0.5)
       .setVisible(false)
     this.goText.setStroke('#05070f', 12)
 
+    const bannerY = IS_TOUCH ? 300 : 122
     this.bannerPlate = this.add
-      .rectangle(GAME_WIDTH / 2, 122, 500, 62, UI.deep)
+      .rectangle(GAME_WIDTH / 2, bannerY, 500, 62, UI.deep)
       .setStrokeStyle(2, UI.danger)
       .setVisible(false)
     this.bannerTextObj = this.add
-      .text(GAME_WIDTH / 2, 122, '', uiText('32px', '#FF7777', true))
+      .text(GAME_WIDTH / 2, bannerY, '', uiText('32px', '#FF7777', true))
       .setOrigin(0.5)
       .setVisible(false)
     tracked(this.bannerTextObj, 6)
@@ -213,7 +219,7 @@ export class ArenaScene extends Phaser.Scene {
       .setAlpha(0.75)
     tracked(hint, 2)
 
-    if (isTouchDevice()) {
+    if (IS_TOUCH) {
       this.input.addPointer(4)
       this.touch = new TouchController()
       this.touch.attachSafety()
@@ -297,6 +303,11 @@ export class ArenaScene extends Phaser.Scene {
     this.opponent.handleInput(inputP2, this.player)
 
     this.playWhoosh(prevPlayerPhase, prevOpponentPhase)
+
+    if (IS_TOUCH) {
+      this.clampFighter(this.player)
+      this.clampFighter(this.opponent)
+    }
 
     const hitP = resolveHit(this.player, this.opponent)
     if (hitP) this.onHitResolved(this.player, this.opponent, hitP)
@@ -420,6 +431,19 @@ export class ArenaScene extends Phaser.Scene {
     }
   }
 
+  private clampFighter(fighter: Fighter) {
+    const minX = 260
+    const maxX = 1020
+    const body = fighter.sprite.body as Phaser.Physics.Arcade.Body
+    const x = Phaser.Math.Clamp(fighter.sprite.x, minX, maxX)
+    if (x !== fighter.sprite.x) {
+      fighter.sprite.x = x
+      if ((x === minX && body.velocity.x < 0) || (x === maxX && body.velocity.x > 0)) {
+        body.setVelocityX(0)
+      }
+    }
+  }
+
   private updateLandingDust() {
     const check = (fighter: Fighter, prev: boolean): boolean => {
       const body = fighter.sprite.body as Phaser.Physics.Arcade.Body
@@ -531,15 +555,22 @@ export class ArenaScene extends Phaser.Scene {
     tracked(statsText, 2)
     container.add(statsText)
 
-    const rematchBtn = createButton(this, GAME_WIDTH / 2, 474, 'REMATCH', () => this.rematch(), {
-      primary: true,
-      width: 400,
-      letterSpacing: 4,
-    })
+    const rematchBtn = createButton(
+      this,
+      GAME_WIDTH / 2,
+      IS_TOUCH ? 430 : 474,
+      'REMATCH',
+      () => this.rematch(),
+      {
+        primary: true,
+        width: 400,
+        letterSpacing: 4,
+      },
+    )
     const changeBtn = createButton(
       this,
       GAME_WIDTH / 2,
-      550,
+      IS_TOUCH ? 500 : 550,
       'CHANGE FIGHTER',
       () => this.scene.start('character-select', { mode: this.match.mode }),
       { width: 400 },
@@ -547,7 +578,7 @@ export class ArenaScene extends Phaser.Scene {
     const menuBtn = createButton(
       this,
       GAME_WIDTH / 2,
-      626,
+      IS_TOUCH ? 570 : 626,
       'MAIN MENU',
       () => {
         this.physics.resume()
@@ -559,12 +590,14 @@ export class ArenaScene extends Phaser.Scene {
     container.add(changeBtn)
     container.add(menuBtn)
 
-    const hint = this.add
-      .text(GAME_WIDTH / 2, 684, 'OR PRESS R TO REMATCH', uiText('13px', '#97A5B9'))
-      .setOrigin(0.5)
-      .setAlpha(0.75)
-    tracked(hint, 3)
-    container.add(hint)
+    if (!IS_TOUCH) {
+      const hint = this.add
+        .text(GAME_WIDTH / 2, 684, 'OR PRESS R TO REMATCH', uiText('13px', '#97A5B9'))
+        .setOrigin(0.5)
+        .setAlpha(0.75)
+      tracked(hint, 3)
+      container.add(hint)
+    }
 
     this.resultOverlay = container
   }
@@ -602,12 +635,14 @@ export class ArenaScene extends Phaser.Scene {
       }),
     )
 
-    const hint = this.add
-      .text(GAME_WIDTH / 2, 650, 'PRESS ESC TO RESUME', uiText('14px', '#97A5B9'))
-      .setOrigin(0.5)
-      .setAlpha(0.8)
-    tracked(hint, 3)
-    container.add(hint)
+    if (!IS_TOUCH) {
+      const hint = this.add
+        .text(GAME_WIDTH / 2, 650, 'PRESS ESC TO RESUME', uiText('14px', '#97A5B9'))
+        .setOrigin(0.5)
+        .setAlpha(0.8)
+      tracked(hint, 3)
+      container.add(hint)
+    }
 
     this.pauseOverlay = container
   }
@@ -652,8 +687,8 @@ export class ArenaScene extends Phaser.Scene {
     color: number,
     fromRight: boolean,
     name: string,
+    width: number,
   ): HealthBar {
-    const width = 460
     const barY = y + 28
     const barH = 26
     const inset = 3
