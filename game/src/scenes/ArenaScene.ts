@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import { AIController } from '../ai/AIController'
 import { getHitboxRect, getHurtboxRect, resolveHit, type HitResult } from '../combat/CombatSystem'
 import { FIGHTERS } from '../config/characters.config'
-import { GAME_HEIGHT, GAME_WIDTH, GROUND_Y, IS_TOUCH, WORLD_ZOOM } from '../config/game.config'
+import { GAME_HEIGHT, GAME_WIDTH, GROUND_Y, IS_TOUCH } from '../config/game.config'
 import { Fighter, type FighterPhase } from '../entities/Fighter'
 import { emptyInput, mergeInputs, type InputSnapshot } from '../input/InputSnapshot'
 import { KeyboardController } from '../input/KeyboardController'
@@ -82,7 +82,6 @@ export class ArenaScene extends Phaser.Scene {
 
   create(data?: MatchSceneData) {
     generatePlaceholderArt(this)
-    if (IS_TOUCH) this.cameras.main.setZoom(WORLD_ZOOM)
     this.drawBackdrop()
     this.drawGround()
 
@@ -148,7 +147,7 @@ export class ArenaScene extends Phaser.Scene {
     this.debugGfx = this.add.graphics()
     this.playerBar = this.createHealthBar(
       IS_TOUCH ? 210 : 36,
-      IS_TOUCH ? 132 : 30,
+      IS_TOUCH ? 140 : 30,
       UI.lime,
       false,
       FIGHTERS[this.playerKey].name.toUpperCase(),
@@ -156,14 +155,14 @@ export class ArenaScene extends Phaser.Scene {
     )
     this.opponentBar = this.createHealthBar(
       IS_TOUCH ? 1070 : GAME_WIDTH - 36,
-      IS_TOUCH ? 132 : 30,
+      IS_TOUCH ? 140 : 30,
       UI.danger,
       true,
       FIGHTERS[this.opponentKey].name.toUpperCase(),
       IS_TOUCH ? 340 : 460,
     )
 
-    const plateY = IS_TOUCH ? 126 : 18
+    const plateY = IS_TOUCH ? 140 : 18
     const plate = this.add.graphics()
     plate.fillStyle(UI.deep, 1)
     plate.fillRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 10)
@@ -432,8 +431,8 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private clampFighter(fighter: Fighter) {
-    const minX = 260
-    const maxX = 1020
+    const minX = 140
+    const maxX = 1140
     const body = fighter.sprite.body as Phaser.Physics.Arcade.Body
     const x = Phaser.Math.Clamp(fighter.sprite.x, minX, maxX)
     if (x !== fighter.sprite.x) {
@@ -558,7 +557,7 @@ export class ArenaScene extends Phaser.Scene {
     const rematchBtn = createButton(
       this,
       GAME_WIDTH / 2,
-      IS_TOUCH ? 430 : 474,
+      IS_TOUCH ? 425 : 474,
       'REMATCH',
       () => this.rematch(),
       {
@@ -570,7 +569,7 @@ export class ArenaScene extends Phaser.Scene {
     const changeBtn = createButton(
       this,
       GAME_WIDTH / 2,
-      IS_TOUCH ? 500 : 550,
+      IS_TOUCH ? 490 : 550,
       'CHANGE FIGHTER',
       () => this.scene.start('character-select', { mode: this.match.mode }),
       { width: 400 },
@@ -578,7 +577,7 @@ export class ArenaScene extends Phaser.Scene {
     const menuBtn = createButton(
       this,
       GAME_WIDTH / 2,
-      IS_TOUCH ? 570 : 626,
+      IS_TOUCH ? 555 : 626,
       'MAIN MENU',
       () => {
         this.physics.resume()
@@ -620,19 +619,31 @@ export class ArenaScene extends Phaser.Scene {
     container.add(title)
 
     container.add(
-      createButton(this, GAME_WIDTH / 2, 420, 'RESUME', () => this.togglePause(), {
+      createButton(this, GAME_WIDTH / 2, IS_TOUCH ? 415 : 420, 'RESUME', () => this.togglePause(), {
         primary: true,
         width: 400,
         letterSpacing: 4,
       }),
     )
     container.add(
-      createButton(this, GAME_WIDTH / 2, 496, 'RESTART', () => this.rematch(), { width: 400 }),
+      createButton(
+        this,
+        GAME_WIDTH / 2,
+        IS_TOUCH ? 485 : 496,
+        'RESTART',
+        () => this.rematch(),
+        { width: 400 },
+      ),
     )
     container.add(
-      createButton(this, GAME_WIDTH / 2, 572, 'QUIT TO MENU', () => this.quitToMenu(), {
-        width: 400,
-      }),
+      createButton(
+        this,
+        GAME_WIDTH / 2,
+        IS_TOUCH ? 555 : 572,
+        'QUIT TO MENU',
+        () => this.quitToMenu(),
+        { width: 400 },
+      ),
     )
 
     if (!IS_TOUCH) {

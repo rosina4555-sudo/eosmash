@@ -82,7 +82,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     createEyebrow(
       this,
       GAME_WIDTH / 2,
-      IS_TOUCH ? 112 : 44,
+      IS_TOUCH ? 120 : 44,
       this.mode === 'practice' ? 'PRACTICE MODE' : 'QUICK FIGHT',
     )
 
@@ -110,7 +110,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       this.buildDifficultyRow(IS_TOUCH ? 515 : 596)
     }
 
-    const buttonY = IS_TOUCH ? 578 : 668
+    const buttonY = IS_TOUCH ? 575 : 668
     createButton(this, 210, buttonY, 'BACK', () => this.scene.start('menu'), { width: 240 })
     this.fightButton = createButton(this, 1070, buttonY, 'FIGHT', () => this.startFight(), {
       width: 300,

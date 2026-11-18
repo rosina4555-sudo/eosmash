@@ -19,7 +19,7 @@ export class MenuScene extends Phaser.Scene {
     drawMenuBackdrop(this, GAME_WIDTH, GAME_HEIGHT)
     audio.ensure()
 
-    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 112 : 64, 'PROTOTYPE BUILD')
+    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 120 : 64, 'PROTOTYPE BUILD')
 
     const title = this.add
       .text(GAME_WIDTH / 2, IS_TOUCH ? 178 : 150, 'EOSMASH', uiText('86px', '#FFFFFF', true))
@@ -45,7 +45,7 @@ export class MenuScene extends Phaser.Scene {
       .setOrigin(0.5)
 
     const btn = (i: number, desktopY: number): number =>
-      IS_TOUCH ? 400 + i * 60 : desktopY
+      IS_TOUCH ? 395 + i * 60 : desktopY
 
     createButton(this, GAME_WIDTH / 2, btn(0, 404), 'QUICK FIGHT', () => {
       this.scene.start('character-select', { mode: 'quick' })

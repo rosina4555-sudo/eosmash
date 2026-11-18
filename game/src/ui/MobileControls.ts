@@ -19,12 +19,12 @@ export class MobileControls {
     this.touch = touch
     this.container = scene.add.container(0, 0)
 
-    this.buildActionButton(300, 545, 44, { arrow: 'left' }, 'left')
-    this.buildActionButton(430, 545, 44, { arrow: 'right' }, 'right')
-    this.buildActionButton(880, 425, 42, { text: 'JUMP' }, 'jump')
-    this.buildActionButton(880, 545, 42, { text: 'BLOCK' }, 'block')
-    this.buildActionButton(1010, 545, 42, { text: 'LIGHT' }, 'light')
-    this.buildActionButton(1010, 425, 42, { text: 'HEAVY' }, 'heavy')
+    this.buildActionButton(300, 530, 44, { arrow: 'left' }, 'left')
+    this.buildActionButton(430, 530, 44, { arrow: 'right' }, 'right')
+    this.buildActionButton(880, 410, 42, { text: 'JUMP' }, 'jump')
+    this.buildActionButton(880, 530, 42, { text: 'BLOCK' }, 'block')
+    this.buildActionButton(1010, 530, 42, { text: 'LIGHT' }, 'light')
+    this.buildActionButton(1010, 410, 42, { text: 'HEAVY' }, 'heavy')
 
     this.buildPauseButton(onPause)
 

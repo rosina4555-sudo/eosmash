@@ -13,5 +13,3 @@ export const PHYSICS = {
 export const GAME_CONFIG = {
   backgroundColor: '#0B1020',
 } as const
-
-export const WORLD_ZOOM = IS_TOUCH ? 1.4 : 1

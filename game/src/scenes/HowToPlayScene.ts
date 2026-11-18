@@ -52,7 +52,7 @@ export class HowToPlayScene extends Phaser.Scene {
     drawMenuBackdrop(this, GAME_WIDTH, GAME_HEIGHT)
     audio.ensure()
 
-    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 112 : 56, 'GAME RULES')
+    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 120 : 56, 'GAME RULES')
 
     const title = this.add
       .text(
@@ -84,7 +84,7 @@ export class HowToPlayScene extends Phaser.Scene {
     createButton(
       this,
       GAME_WIDTH / 2,
-      IS_TOUCH ? 578 : GAME_HEIGHT - 70,
+      IS_TOUCH ? 575 : GAME_HEIGHT - 70,
       'BACK',
       () => this.scene.start('menu'),
       {

@@ -22,7 +22,7 @@ export class SettingsScene extends Phaser.Scene {
 
     const settings = loadSettings()
 
-    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 112 : 64, 'GAME OPTIONS')
+    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 120 : 64, 'GAME OPTIONS')
 
     const title = this.add
       .text(GAME_WIDTH / 2, IS_TOUCH ? 155 : 110, 'SETTINGS', uiText('48px', '#FFFFFF', true))
