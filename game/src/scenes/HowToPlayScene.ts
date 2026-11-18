@@ -40,7 +40,7 @@ const TOUCH_LINES: Array<{ text: string; header?: boolean }> = [
   { text: '' },
   { text: 'TIPS', header: true },
   { text: 'Read your opponent and punish missed attacks.' },
-  { text: 'Watch the timer — sudden death ends ties fast.' },
+  { text: 'Watch the timer. Sudden death ends ties fast.' },
 ]
 
 export class HowToPlayScene extends Phaser.Scene {
@@ -52,22 +52,15 @@ export class HowToPlayScene extends Phaser.Scene {
     drawMenuBackdrop(this, GAME_WIDTH, GAME_HEIGHT)
     audio.ensure()
 
-    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 120 : 56, 'GAME RULES')
+    createEyebrow(this, GAME_WIDTH / 2, 56, 'GAME RULES')
 
     const title = this.add
-      .text(
-        GAME_WIDTH / 2,
-        IS_TOUCH ? 152 : 100,
-        'HOW TO PLAY',
-        uiText('48px', '#FFFFFF', true),
-      )
+      .text(GAME_WIDTH / 2, 100, 'HOW TO PLAY', uiText('48px', '#FFFFFF', true))
       .setOrigin(0.5)
     tracked(title, 8)
 
     const lines = IS_TOUCH ? TOUCH_LINES : LINES
-    const textStep = IS_TOUCH ? 31 : 36
-    const emptyStep = IS_TOUCH ? 12 : 16
-    let y = IS_TOUCH ? 176 : 168
+    let y = 168
     for (const line of lines) {
       if (line.text) {
         const text = this.add.text(
@@ -78,18 +71,11 @@ export class HowToPlayScene extends Phaser.Scene {
         )
         if (line.header) tracked(text, 4)
       }
-      y += line.text === '' ? emptyStep : textStep
+      y += line.text === '' ? 16 : 36
     }
 
-    createButton(
-      this,
-      GAME_WIDTH / 2,
-      IS_TOUCH ? 575 : GAME_HEIGHT - 70,
-      'BACK',
-      () => this.scene.start('menu'),
-      {
-        width: 260,
-      },
-    )
+    createButton(this, GAME_WIDTH / 2, GAME_HEIGHT - 70, 'BACK', () => this.scene.start('menu'), {
+      width: 260,
+    })
   }
 }

@@ -1,11 +1,5 @@
 import Phaser from 'phaser'
-import {
-  GAME_CONFIG,
-  GAME_HEIGHT,
-  GAME_WIDTH,
-  IS_TOUCH,
-  PHYSICS,
-} from './config/game.config'
+import { GAME_CONFIG, GAME_HEIGHT, GAME_WIDTH, PHYSICS } from './config/game.config'
 import { ArenaScene } from './scenes/ArenaScene'
 import { CharacterSelectScene } from './scenes/CharacterSelectScene'
 import { HowToPlayScene } from './scenes/HowToPlayScene'
@@ -20,7 +14,7 @@ export function createArenaGame(parent: HTMLElement): Phaser.Game {
     height: GAME_HEIGHT,
     backgroundColor: GAME_CONFIG.backgroundColor,
     scale: {
-      mode: IS_TOUCH ? Phaser.Scale.ENVELOP : Phaser.Scale.FIT,
+      mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     physics: {

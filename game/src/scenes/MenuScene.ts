@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { GAME_HEIGHT, GAME_WIDTH, IS_TOUCH } from '../config/game.config'
+import { GAME_HEIGHT, GAME_WIDTH } from '../config/game.config'
 import { audio } from '../systems/AudioManager'
 import {
   UI,
@@ -19,62 +19,47 @@ export class MenuScene extends Phaser.Scene {
     drawMenuBackdrop(this, GAME_WIDTH, GAME_HEIGHT)
     audio.ensure()
 
-    createEyebrow(this, GAME_WIDTH / 2, IS_TOUCH ? 120 : 64, 'PROTOTYPE BUILD')
+    createEyebrow(this, GAME_WIDTH / 2, 64, 'PROTOTYPE BUILD')
 
     const title = this.add
-      .text(GAME_WIDTH / 2, IS_TOUCH ? 178 : 150, 'EOSMASH', uiText('86px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, 150, 'EOSMASH', uiText('86px', '#FFFFFF', true))
       .setOrigin(0.5)
     tracked(title, 10)
 
     const subtitle = this.add
-      .text(GAME_WIDTH / 2, IS_TOUCH ? 266 : 238, 'ARENA', uiText('86px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, 238, 'ARENA', uiText('86px', '#C6F36A', true))
       .setOrigin(0.5)
     tracked(subtitle, 26)
 
     const rule = this.add.graphics()
     rule.fillStyle(UI.lime, 1)
-    rule.fillRect(GAME_WIDTH / 2 - 30, IS_TOUCH ? 316 : 288, 60, 4)
+    rule.fillRect(GAME_WIDTH / 2 - 30, 288, 60, 4)
 
     this.add
-      .text(
-        GAME_WIDTH / 2,
-        IS_TOUCH ? 350 : 322,
-        'Enter the fight. Prove your skill.',
-        uiText('18px', '#97A5B9'),
-      )
+      .text(GAME_WIDTH / 2, 322, 'Enter the fight. Prove your skill.', uiText('18px', '#97A5B9'))
       .setOrigin(0.5)
 
-    const btn = (i: number, desktopY: number): number =>
-      IS_TOUCH ? 395 + i * 60 : desktopY
-
-    createButton(this, GAME_WIDTH / 2, btn(0, 404), 'QUICK FIGHT', () => {
+    createButton(this, GAME_WIDTH / 2, 404, 'QUICK FIGHT', () => {
       this.scene.start('character-select', { mode: 'quick' })
     }, { primary: true, width: 380 })
 
-    createButton(this, GAME_WIDTH / 2, btn(1, 476), 'PRACTICE', () => {
+    createButton(this, GAME_WIDTH / 2, 476, 'PRACTICE', () => {
       this.scene.start('character-select', { mode: 'practice' })
     }, { width: 380 })
 
-    createButton(this, GAME_WIDTH / 2, btn(2, 548), 'HOW TO PLAY', () => {
+    createButton(this, GAME_WIDTH / 2, 548, 'HOW TO PLAY', () => {
       this.scene.start('how-to-play')
     }, { width: 380 })
 
-    createButton(this, GAME_WIDTH / 2, btn(3, 620), 'SETTINGS', () => {
+    createButton(this, GAME_WIDTH / 2, 620, 'SETTINGS', () => {
       this.scene.start('settings')
     }, { width: 380 })
 
-    if (!IS_TOUCH) {
-      const hint = this.add
-        .text(
-          GAME_WIDTH / 2,
-          GAME_HEIGHT - 24,
-          'A 2D FIGHTING GAME BY EOSMASH',
-          uiText('12px', '#97A5B9'),
-        )
-        .setOrigin(0.5)
-        .setAlpha(0.6)
-      tracked(hint, 4)
-    }
+    const hint = this.add
+      .text(GAME_WIDTH / 2, GAME_HEIGHT - 24, 'A 2D FIGHTING GAME BY EOSMASH', uiText('12px', '#97A5B9'))
+      .setOrigin(0.5)
+      .setAlpha(0.6)
+    tracked(hint, 4)
 
     this.input.keyboard?.once('keydown', () => audio.ensure())
     this.input.once('pointerdown', () => audio.ensure())

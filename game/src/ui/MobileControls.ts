@@ -19,14 +19,15 @@ export class MobileControls {
     this.touch = touch
     this.container = scene.add.container(0, 0)
 
-    this.buildActionButton(300, 530, 44, { arrow: 'left' }, 'left')
-    this.buildActionButton(430, 530, 44, { arrow: 'right' }, 'right')
-    this.buildActionButton(880, 410, 42, { text: 'JUMP' }, 'jump')
-    this.buildActionButton(880, 530, 42, { text: 'BLOCK' }, 'block')
-    this.buildActionButton(1010, 530, 42, { text: 'LIGHT' }, 'light')
-    this.buildActionButton(1010, 410, 42, { text: 'HEAVY' }, 'heavy')
+    this.buildActionButton(110, 615, 54, { arrow: 'left' }, 'left')
+    this.buildActionButton(245, 615, 54, { arrow: 'right' }, 'right')
+    this.buildActionButton(1045, 505, 50, { text: 'JUMP' }, 'jump')
+    this.buildActionButton(1045, 635, 50, { text: 'BLOCK' }, 'block')
+    this.buildActionButton(1170, 635, 50, { text: 'LIGHT' }, 'light')
+    this.buildActionButton(1170, 505, 50, { text: 'HEAVY' }, 'heavy')
 
     this.buildPauseButton(onPause)
+    this.refreshAlpha()
 
     scene.input.on(Phaser.Input.Events.POINTER_UP, this.onPointerUp, this)
   }
@@ -37,6 +38,7 @@ export class MobileControls {
       this.touch.releaseAll()
       for (const button of this.buttons) button.setPressed(false)
     }
+    this.refreshAlpha()
   }
 
   destroy() {
@@ -49,6 +51,12 @@ export class MobileControls {
     for (const button of this.buttons) {
       button.setPressed(this.touch.isHeld(button.action))
     }
+    this.refreshAlpha()
+  }
+
+  private refreshAlpha() {
+    const anyHeld = this.buttons.some((button) => this.touch.isHeld(button.action))
+    this.container.setAlpha(anyHeld ? 1 : 0.6)
   }
 
   private buildActionButton(
@@ -99,6 +107,7 @@ export class MobileControls {
       this.touch.press(action, pointer.id)
       audio.ensure()
       setPressed(true)
+      this.refreshAlpha()
     })
 
     const button = scene.add.container(x, y, [bg, glyph, hit])
@@ -131,6 +140,6 @@ export class MobileControls {
       onPause()
     })
 
-    this.container.add(scene.add.container(1055, 275, [bg, hit]))
+    this.container.add(scene.add.container(1230, 120, [bg, hit]))
   }
 }

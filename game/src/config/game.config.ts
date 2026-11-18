@@ -3,7 +3,7 @@ export const IS_TOUCH =
 
 export const GAME_WIDTH = 1280
 export const GAME_HEIGHT = 720
-export const GROUND_Y = IS_TOUCH ? 580 : 620
+export const GROUND_Y = 620
 export const GROUND_HEIGHT = GAME_HEIGHT - GROUND_Y
 
 export const PHYSICS = {
