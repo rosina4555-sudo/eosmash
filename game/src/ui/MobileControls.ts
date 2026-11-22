@@ -21,6 +21,8 @@ export class MobileControls {
 
     this.buildActionButton(110, 615, 54, { arrow: 'left' }, 'left')
     this.buildActionButton(245, 615, 54, { arrow: 'right' }, 'right')
+    this.buildActionButton(110, 500, 46, { text: 'CROUCH' }, 'crouch')
+    this.buildActionButton(245, 500, 46, { text: 'SP' }, 'special')
     this.buildActionButton(1045, 505, 50, { text: 'JUMP' }, 'jump')
     this.buildActionButton(1045, 635, 50, { text: 'BLOCK' }, 'block')
     this.buildActionButton(1170, 635, 50, { text: 'LIGHT' }, 'light')
@@ -83,7 +85,7 @@ export class MobileControls {
       glyph = tri
     } else {
       const text = scene.add
-        .text(0, 0, visual.text ?? '', uiText('14px', '#FFFFFF', true))
+        .text(0, -1, visual.text ?? '', uiText('14px', '#FFFFFF', true, true))
         .setOrigin(0.5)
       text.setLetterSpacing(2)
       drawGlyph = (pressed) => text.setColor(pressed ? '#0B1020' : '#FFFFFF')

@@ -40,7 +40,7 @@ function onDecline() {
           We use anonymous visit stats to improve Eosmash. With your permission, we also record
           sessions to see where visitors get stuck.
         </p>
-        <p class="mt-1 text-[13px] leading-relaxed text-muted-slate">
+        <p class="mt-1 text-sm leading-relaxed text-muted-slate">
           Decline and only anonymous traffic stats will run.
           <RouterLink to="/privacy" class="underline underline-offset-2 hover:text-electric-lime">
             Privacy Policy
@@ -48,18 +48,10 @@ function onDecline() {
         </p>
       </div>
       <div class="flex shrink-0 gap-3">
-        <button
-          type="button"
-          class="inline-flex h-10 flex-1 items-center justify-center rounded-[8px] bg-electric-lime px-6 text-[13px] font-semibold tracking-wide text-midnight uppercase transition-colors hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime sm:flex-none"
-          @click="onAccept"
-        >
+        <button type="button" class="btn-primary min-h-10 px-6 text-sm" @click="onAccept">
           Accept
         </button>
-        <button
-          type="button"
-          class="inline-flex h-10 flex-1 items-center justify-center rounded-[8px] border border-soft-white/30 px-6 text-[13px] font-semibold tracking-wide text-pure-white uppercase transition-all hover:border-pure-white hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime sm:flex-none"
-          @click="onDecline"
-        >
+        <button type="button" class="btn-quiet min-h-10 px-6 text-sm" @click="onDecline">
           Decline
         </button>
       </div>

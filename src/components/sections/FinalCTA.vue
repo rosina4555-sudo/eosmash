@@ -19,29 +19,16 @@ function scrollToWaitlist() {
         :class="{ 'is-visible': isVisible }"
         :style="style"
       >
-        <div class="mb-6 flex items-center justify-center gap-3">
-          <span class="h-px w-8 bg-electric-lime" aria-hidden="true" />
-          <p
-            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
-          >
-            Last chance
-          </p>
-          <span class="h-px w-8 bg-electric-lime" aria-hidden="true" />
-        </div>
         <h2
           id="final-cta-heading"
           class="text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[48px]"
         >
-          Think you have what it takes?
+          Your rival is waiting.
         </h2>
         <p class="mt-4 text-base leading-relaxed text-muted-slate md:text-lg">
           The competition is almost here. Get on the list and be part of the crew from day one.
         </p>
-        <button
-          type="button"
-          class="cta-sweep mt-9 inline-flex h-13 min-w-[220px] items-center justify-center bg-electric-lime px-8 text-sm font-semibold tracking-wide text-midnight uppercase transition-colors duration-200 hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime md:h-14 md:text-base"
-          @click="scrollToWaitlist"
-        >
+        <button type="button" class="btn-primary mt-9 min-w-[220px]" @click="scrollToWaitlist">
           Join the waitlist
         </button>
       </div>

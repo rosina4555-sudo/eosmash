@@ -17,7 +17,7 @@ const uid = `faq-${Math.random().toString(36).slice(2, 9)}`
     <h3>
       <button
         type="button"
-        class="group flex w-full items-start justify-between gap-6 px-6 py-5 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-electric-lime md:px-7 md:py-6"
+        class="group flex h-[52px] w-full items-center justify-between gap-6 px-6 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-electric-lime md:px-7"
         :aria-expanded="open"
         :aria-controls="`panel-${uid}`"
         :id="`button-${uid}`"
@@ -29,8 +29,8 @@ const uid = `faq-${Math.random().toString(36).slice(2, 9)}`
           {{ item.question }}
         </span>
         <span
-          class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-midnight text-electric-lime transition-all duration-200"
-          :class="open ? 'rotate-45 bg-electric-lime text-midnight' : ''"
+          class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center text-electric-lime transition-transform duration-200"
+          :class="open ? 'rotate-45' : ''"
           aria-hidden="true"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

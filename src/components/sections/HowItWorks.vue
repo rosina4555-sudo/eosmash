@@ -42,14 +42,6 @@ const steps = [
         :class="{ 'is-visible': headerVisible }"
         :style="headerStyle"
       >
-        <div class="mb-5 flex items-center gap-3">
-          <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
-          <p
-            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
-          >
-            How it works
-          </p>
-        </div>
         <h2
           id="how-heading"
           class="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[42px] lg:text-[48px]"
@@ -73,7 +65,7 @@ const steps = [
           :style="itemStyle(i)"
         >
           <div
-            class="mb-5 h-14 w-14 icon-hover text-electric-lime transition-colors duration-200 group-hover:text-pure-white"
+            class="mb-5 h-14 w-14 text-electric-lime transition-colors duration-200 group-hover:text-pure-white"
             aria-hidden="true"
           >
             <svg v-if="step.icon === 'gamepad'" viewBox="0 0 56 56" fill="none" class="h-full w-full">
@@ -90,7 +82,7 @@ const steps = [
               <circle cx="18" cy="28" r="8" stroke="currentColor" stroke-width="2" />
               <circle cx="38" cy="28" r="8" stroke="currentColor" stroke-width="2" />
               <path d="M28 20v16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 3" />
-              <path d="M14 40c2-3 6-5 10-5M46 40c-2-3-6-5-10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M14 40c2-3 6-5 10-5M46 40c-2-3 6-5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               <path d="M18 24v4M16 26h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <path d="M38 24v4M36 26h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
@@ -98,7 +90,7 @@ const steps = [
             <svg v-else-if="step.icon === 'swords'" viewBox="0 0 56 56" fill="none" class="h-full w-full">
               <path d="M12 12l16 16M44 12L28 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               <path d="M12 12l4 12 12-4M44 12l-4 12-12-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M28 32v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M28 32v12" stroke="currentColor" stroke-width="2" />
               <path d="M22 44h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               <path d="M24 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
@@ -107,7 +99,7 @@ const steps = [
               <path d="M18 12h20v14c0 6-4.5 10-10 10s-10-4-10-10V12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
               <path d="M18 16H12c0 6 2 10 6 12M38 16h6c0 6-2 10-6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               <path d="M28 36v6M20 48h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              <path d="M20 48c0-3 3.5-4 8-4s8 1 8 4" stroke="currentColor" stroke-width="2" />
+              <path d="M20 48c0-3 3.5-4 8-4s8 1 8 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               <path d="M24 20l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </div>

@@ -2,7 +2,8 @@ import Phaser from 'phaser'
 import { audio } from '../systems/AudioManager'
 
 export const UI = {
-  font: 'Space Grotesk, system-ui, sans-serif',
+  font: 'Nunito, system-ui, sans-serif',
+  display: 'Bungee, system-ui, sans-serif',
   ink: 0x0b1020,
   deep: 0x0a0e1a,
   panel: 0x111a2e,
@@ -14,8 +15,13 @@ export const UI = {
   danger: 0xff7777,
 } as const
 
-export const uiText = (fontSize: string, color: string, bold = false) => ({
-  fontFamily: UI.font,
+export const uiText = (
+  fontSize: string,
+  color: string,
+  bold = false,
+  display = false,
+) => ({
+  fontFamily: display ? UI.display : UI.font,
   fontSize,
   color,
   fontStyle: bold ? ('bold' as const) : ('normal' as const),
@@ -32,7 +38,7 @@ export function createEyebrow(
   label: string,
   align: 'center' | 'left' = 'center',
 ): Phaser.GameObjects.Container {
-  const text = scene.add.text(0, 0, label, uiText('13px', '#C6F36A', true)).setOrigin(0, 0.5)
+  const text = scene.add.text(0, 0, label, uiText('13px', '#C6F36A', true, true)).setOrigin(0, 0.5)
   tracked(text, 4)
 
   const tick = scene.add.graphics()
@@ -74,22 +80,25 @@ export function createButton(
   const letterSpacing = options.letterSpacing ?? 3
 
   const bg = scene.add.graphics()
+  const radius = 14
   const draw = (hover: boolean) => {
     bg.clear()
+    bg.fillStyle(0x05070f, 0.85)
+    bg.fillRoundedRect(-width / 2, -height / 2 + 5, width, height, radius)
     if (primary) {
       bg.fillStyle(hover ? UI.limeBright : UI.lime, 1)
-      bg.fillRoundedRect(-width / 2, -height / 2, width, height, 10)
+      bg.fillRoundedRect(-width / 2, -height / 2, width, height, radius)
     } else {
       bg.fillStyle(hover ? UI.panel : UI.deep, 1)
-      bg.fillRoundedRect(-width / 2, -height / 2, width, height, 10)
-      bg.lineStyle(2, hover ? UI.lime : UI.line, 1)
-      bg.strokeRoundedRect(-width / 2, -height / 2, width, height, 10)
+      bg.fillRoundedRect(-width / 2, -height / 2, width, height, radius)
+      bg.lineStyle(3, hover ? UI.lime : UI.line, 1)
+      bg.strokeRoundedRect(-width / 2, -height / 2, width, height, radius)
     }
   }
   draw(false)
 
   const text = scene.add
-    .text(0, 0, label, uiText(fontSize, primary ? '#0B1020' : '#FFFFFF', true))
+    .text(0, -2, label, uiText(fontSize, primary ? '#0B1020' : '#FFFFFF', true, true))
     .setOrigin(0.5)
   tracked(text, letterSpacing)
 
@@ -130,9 +139,9 @@ export function createSlider(
   const height = 16
 
   const labelText = scene.add
-    .text(x, y - 30, '', uiText('14px', '#97A5B9', true))
+    .text(x, y - 30, '', uiText('14px', '#97A5B9', true, true))
     .setOrigin(0, 0.5)
-  tracked(labelText, 3)
+  tracked(labelText, 2)
 
   const track = scene.add.graphics()
   const fill = scene.add.graphics()

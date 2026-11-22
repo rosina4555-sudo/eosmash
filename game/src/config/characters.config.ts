@@ -8,6 +8,7 @@ export interface FighterDefinition {
   jumpVelocity: number
   bodyWidth: number
   bodyHeight: number
+  artOriginX?: number
 }
 
 export const FIGHTERS: Record<'rex' | 'nyra', FighterDefinition> = {
@@ -19,8 +20,9 @@ export const FIGHTERS: Record<'rex' | 'nyra', FighterDefinition> = {
     health: 1000,
     moveSpeed: 240,
     jumpVelocity: -700,
-    bodyWidth: 40,
+    bodyWidth: 39,
     bodyHeight: 100,
+    artOriginX: 0.4603,
   },
   nyra: {
     key: 'nyra',
@@ -30,7 +32,8 @@ export const FIGHTERS: Record<'rex' | 'nyra', FighterDefinition> = {
     health: 900,
     moveSpeed: 320,
     jumpVelocity: -700,
-    bodyWidth: 34,
-    bodyHeight: 100,
+    bodyWidth: 35,
+    bodyHeight: 92,
+    artOriginX: 0.3571,
   },
 }

@@ -1,0 +1,24 @@
+[
+ {
+  "shape": "kept",
+  "theme": "brand",
+  "axes": "navy/lime/sentence-case",
+  "hero": "kept",
+  "nav": "kept",
+  "footer": "kept",
+  "imagery": "brand art SVGs + category photos",
+  "photos": [],
+  "entry": "restyle brand landing: lime controls on midnight, sentence case, no eyebrows",
+  "fingerprint": "kept-hero/left-text+stats|nav-inline|footer-mast|waitsplit-panel|faq-list",
+  "sections": "Hero, HowItWorks, GameCategories, WhyEosmash, Waitlist, FAQ, FinalCTA, Footer",
+  "signature": "electric lime controls on midnight with Space Grotesk display",
+  "waived": [
+   "3",
+   "81",
+   "23"
+  ],
+  "prompt": "redesign the landing page remove any ai slop but dont touch the game; keep branding just restyle",
+  "date": "2026-11-22",
+  "mode": "build"
+ }
+]

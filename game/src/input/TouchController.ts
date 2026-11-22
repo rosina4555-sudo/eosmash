@@ -1,9 +1,22 @@
 import type { InputSnapshot } from './InputSnapshot'
 import { emptyInput } from './InputSnapshot'
 
-export type TouchAction = 'left' | 'right' | 'jump' | 'light' | 'heavy' | 'block'
+export type TouchAction =
+  | 'left'
+  | 'right'
+  | 'jump'
+  | 'light'
+  | 'heavy'
+  | 'block'
+  | 'crouch'
+  | 'special'
 
-const EDGE_ACTIONS: ReadonlySet<TouchAction> = new Set<TouchAction>(['jump', 'light', 'heavy'])
+const EDGE_ACTIONS: ReadonlySet<TouchAction> = new Set<TouchAction>([
+  'jump',
+  'light',
+  'heavy',
+  'special',
+])
 
 export class TouchController {
   private held = new Set<TouchAction>()
@@ -52,9 +65,11 @@ export class TouchController {
     snap.left = this.held.has('left')
     snap.right = this.held.has('right')
     snap.block = this.held.has('block')
+    snap.crouch = this.held.has('crouch')
     snap.jumpPressed = this.edges.delete('jump')
     snap.lightPressed = this.edges.delete('light')
     snap.heavyPressed = this.edges.delete('heavy')
+    snap.specialPressed = this.edges.delete('special')
     return snap
   }
 

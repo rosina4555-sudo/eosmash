@@ -48,14 +48,6 @@ function scrollToWaitlist() {
           :class="{ 'is-visible': leftVisible }"
           :style="leftStyle"
         >
-          <div class="mb-5 flex items-center gap-3">
-            <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
-            <p
-              class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
-            >
-              Why Eosmash
-            </p>
-          </div>
           <h2
             id="why-heading"
             class="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[42px] lg:text-[46px]"
@@ -66,11 +58,7 @@ function scrollToWaitlist() {
             Casual lobbies only go so far. Eosmash is for players who want to compete properly,
             climb the ranks and prove their skill under fair rules.
           </p>
-          <button
-            type="button"
-            class="cta-sweep mt-8 inline-flex h-12 items-center justify-center rounded-[10px] bg-electric-lime px-7 text-sm font-semibold tracking-wide text-midnight uppercase transition-colors duration-200 hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime md:h-[52px]"
-            @click="scrollToWaitlist"
-          >
+          <button type="button" class="btn-primary mt-8" @click="scrollToWaitlist">
             Join the waitlist
           </button>
         </div>
@@ -82,11 +70,11 @@ function scrollToWaitlist() {
           <article
             v-for="(feature, i) in features"
             :key="feature.title"
-            class="card-lift rounded-[14px] bg-midnight/70 p-6 reveal hover:bg-midnight md:p-7"
+            class="card p-6 reveal md:p-7"
             :class="{ 'is-visible': cardsVisible }"
             :style="itemStyle(i)"
           >
-            <div class="mb-5 h-11 w-11 icon-hover text-electric-lime" aria-hidden="true">
+            <div class="mb-5 h-11 w-11 text-electric-lime" aria-hidden="true">
               <svg v-if="feature.icon === 'crosshair'" viewBox="0 0 44 44" fill="none" class="h-full w-full">
                 <circle cx="22" cy="22" r="12" stroke="currentColor" stroke-width="2" />
                 <circle cx="22" cy="22" r="4" stroke="currentColor" stroke-width="2" />

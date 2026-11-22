@@ -4,6 +4,8 @@ export interface InputSnapshot {
   jumpPressed: boolean
   lightPressed: boolean
   heavyPressed: boolean
+  specialPressed: boolean
+  crouch: boolean
   block: boolean
 }
 
@@ -14,6 +16,8 @@ export function emptyInput(): InputSnapshot {
     jumpPressed: false,
     lightPressed: false,
     heavyPressed: false,
+    specialPressed: false,
+    crouch: false,
     block: false,
   }
 }
@@ -25,6 +29,8 @@ export function mergeInputs(a: InputSnapshot, b: InputSnapshot): InputSnapshot {
     jumpPressed: a.jumpPressed || b.jumpPressed,
     lightPressed: a.lightPressed || b.lightPressed,
     heavyPressed: a.heavyPressed || b.heavyPressed,
+    specialPressed: a.specialPressed || b.specialPressed,
+    crouch: a.crouch || b.crouch,
     block: a.block || b.block,
   }
 }

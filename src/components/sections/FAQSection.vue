@@ -52,19 +52,11 @@ const faqs = [
         :class="{ 'is-visible': headerVisible }"
         :style="headerStyle"
       >
-        <div class="mb-5 flex items-center gap-3">
-          <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
-          <p
-            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
-          >
-            FAQ
-          </p>
-        </div>
         <h2
           id="faq-heading"
           class="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[42px] lg:text-[48px]"
         >
-          Questions people ask.
+          Eosmash questions.
         </h2>
       </div>
 

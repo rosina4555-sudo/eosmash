@@ -19,21 +19,7 @@ const { setRef, isVisible, style } = useReveal()
         :style="style"
       >
         <div class="relative p-6 sm:p-8 md:p-12 lg:p-14">
-          <div
-            class="absolute left-0 top-0 h-1.5 w-24 bg-electric-lime draw-line lg:w-32"
-            :class="{ 'is-visible': isVisible }"
-            aria-hidden="true"
-          />
-
           <div class="mt-4">
-            <div class="mb-5 flex items-center gap-3">
-              <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
-              <p
-                class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
-              >
-                Early access
-              </p>
-            </div>
             <h2
               id="waitlist-heading"
               class="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[40px]"
@@ -45,18 +31,16 @@ const { setRef, isVisible, style } = useReveal()
               access before anyone else.
             </p>
 
-            <ul class="mt-9 space-y-3.5">
+            <ul class="mt-9 list-disc space-y-3.5 pl-5 marker:text-electric-lime">
               <li
-                v-for="(item, i) in [
+                v-for="item in [
                   'Launch and early access updates',
                   'News on supported games',
                   'Free to join, no strings attached',
                 ]"
                 :key="item"
-                class="flex items-baseline gap-3.5 text-[15px] text-soft-white"
-                :style="{ transitionDelay: `${200 + i * 80}ms` }"
+                class="text-[15px] text-soft-white"
               >
-                <span class="text-electric-lime" aria-hidden="true">→</span>
                 {{ item }}
               </li>
             </ul>

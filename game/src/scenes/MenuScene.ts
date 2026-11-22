@@ -22,12 +22,12 @@ export class MenuScene extends Phaser.Scene {
     createEyebrow(this, GAME_WIDTH / 2, 64, 'PROTOTYPE BUILD')
 
     const title = this.add
-      .text(GAME_WIDTH / 2, 150, 'EOSMASH', uiText('86px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, 150, 'EOSMASH', uiText('86px', '#FFFFFF', true, true))
       .setOrigin(0.5)
     tracked(title, 10)
 
     const subtitle = this.add
-      .text(GAME_WIDTH / 2, 238, 'ARENA', uiText('86px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, 238, 'ARENA', uiText('86px', '#C6F36A', true, true))
       .setOrigin(0.5)
     tracked(subtitle, 26)
 

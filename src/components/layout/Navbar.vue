@@ -38,7 +38,7 @@ onUnmounted(() => {
 
 <template>
   <header
-    class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+    class="fixed inset-x-0 top-0 z-50 transition-colors duration-300"
     :class="isScrolled ? 'bg-midnight/92 backdrop-blur-md' : 'bg-transparent'"
   >
     <nav
@@ -50,19 +50,14 @@ onUnmounted(() => {
       </RouterLink>
 
       <div class="hidden items-center gap-10 md:flex">
-        <a
-          v-for="link in navLinks"
-          :key="link.href"
-          :href="link.href"
-          class="nav-underline text-[13px] font-medium tracking-wide text-soft-white/80 uppercase transition-colors hover:text-pure-white"
-        >
+        <a v-for="link in navLinks" :key="link.href" :href="link.href" class="nav-link">
           {{ link.label }}
         </a>
       </div>
 
       <button
         type="button"
-        class="cta-sweep hidden h-11 items-center rounded-[10px] bg-electric-lime px-6 text-[13px] font-semibold tracking-wide text-midnight uppercase transition-colors hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime md:inline-flex"
+        class="btn-primary hidden h-11 min-h-0 items-center px-6 text-sm md:inline-flex"
         @click="scrollToWaitlist"
       >
         Join waitlist
@@ -98,14 +93,14 @@ onUnmounted(() => {
         v-for="link in navLinks"
         :key="link.href"
         :href="link.href"
-        class="block py-4 text-sm font-medium tracking-wide text-soft-white uppercase transition-colors hover:text-electric-lime"
+        class="nav-link block py-4"
         @click="closeMobileMenu"
       >
         {{ link.label }}
       </a>
       <button
         type="button"
-        class="mt-5 flex h-12 w-full items-center justify-center rounded-[10px] bg-electric-lime text-sm font-semibold tracking-wide text-midnight uppercase"
+        class="btn-primary mt-5 w-full"
         @click="scrollToWaitlist"
       >
         Join waitlist

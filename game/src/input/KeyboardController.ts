@@ -8,6 +8,8 @@ export interface KeyMap {
   light: number
   heavy: number
   block: number
+  crouch: number
+  special: number
 }
 
 export class KeyboardController {
@@ -18,6 +20,8 @@ export class KeyboardController {
     light: Phaser.Input.Keyboard.Key
     heavy: Phaser.Input.Keyboard.Key
     block: Phaser.Input.Keyboard.Key
+    crouch: Phaser.Input.Keyboard.Key
+    special: Phaser.Input.Keyboard.Key
   }
 
   constructor(scene: Phaser.Scene, map: KeyMap) {
@@ -30,6 +34,8 @@ export class KeyboardController {
       light: kb.addKey(map.light),
       heavy: kb.addKey(map.heavy),
       block: kb.addKey(map.block),
+      crouch: kb.addKey(map.crouch),
+      special: kb.addKey(map.special),
     }
   }
 
@@ -40,6 +46,8 @@ export class KeyboardController {
       jumpPressed: Phaser.Input.Keyboard.JustDown(this.keys.jump),
       lightPressed: Phaser.Input.Keyboard.JustDown(this.keys.light),
       heavyPressed: Phaser.Input.Keyboard.JustDown(this.keys.heavy),
+      specialPressed: Phaser.Input.Keyboard.JustDown(this.keys.special),
+      crouch: this.keys.crouch.isDown,
       block: this.keys.block.isDown,
     }
   }

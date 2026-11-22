@@ -131,10 +131,7 @@ async function handleSubmit() {
   <div class="w-full">
     <form v-if="!isSuccess" novalidate class="flex flex-col gap-5" @submit.prevent="handleSubmit">
       <div>
-        <label
-          for="waitlist-email"
-          class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
-        >
+        <label for="waitlist-email" class="label-quiet mb-2 block">
           Email address <span class="text-electric-lime" aria-hidden="true">*</span>
         </label>
         <input
@@ -147,23 +144,24 @@ async function handleSubmit() {
           placeholder="you@example.com"
           :aria-invalid="!!emailError"
           :aria-describedby="emailError ? 'waitlist-email-error' : undefined"
-          class="h-[52px] w-full rounded-[10px] bg-midnight px-4 text-base text-pure-white placeholder:text-muted-slate/60 ring-1 ring-inset ring-border transition-all duration-200 focus:bg-midnight focus:ring-electric-lime focus:outline-none"
+          class="field"
           @blur="validateEmail"
           @input="emailTouched && validateEmail()"
         />
-        <p v-if="emailError" id="waitlist-email-error" role="alert" class="mt-2 text-sm text-error">
-          {{ emailError }}
+        <p
+          id="waitlist-email-error"
+          role="alert"
+          class="mt-2 min-h-[1lh] text-sm text-error"
+          :class="emailError ? '' : 'invisible'"
+          :aria-hidden="emailError ? undefined : 'true'"
+        >
+          {{ emailError || 'Placeholder' }}
         </p>
       </div>
 
       <div class="grid gap-5 sm:grid-cols-2">
         <div>
-          <label
-            for="waitlist-country"
-            class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
-          >
-            Country
-          </label>
+          <label for="waitlist-country" class="label-quiet mb-2 block">Country</label>
           <input
             id="waitlist-country"
             v-model="form.country"
@@ -171,22 +169,17 @@ async function handleSubmit() {
             name="country"
             autocomplete="country-name"
             placeholder="Ghana"
-            class="h-[52px] w-full rounded-[10px] bg-midnight px-4 text-base text-pure-white placeholder:text-muted-slate/60 ring-1 ring-inset ring-border transition-all duration-200 focus:ring-electric-lime focus:outline-none"
+            class="field"
           />
         </div>
 
         <div>
-          <label
-            for="waitlist-game"
-            class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
-          >
-            Preferred game
-          </label>
+          <label for="waitlist-game" class="label-quiet mb-2 block">Preferred game</label>
           <select
             id="waitlist-game"
             v-model="form.preferred_game"
             name="preferred_game"
-            class="h-[52px] w-full appearance-none rounded-[10px] bg-midnight px-4 text-base text-pure-white ring-1 ring-inset ring-border transition-all duration-200 focus:ring-electric-lime focus:outline-none"
+            class="field appearance-none"
           >
             <option v-for="opt in gameOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
@@ -196,17 +189,12 @@ async function handleSubmit() {
       </div>
 
       <div>
-        <label
-          for="waitlist-device"
-          class="mb-2 block text-xs font-semibold tracking-wider text-soft-white uppercase"
-        >
-          Gaming device
-        </label>
+        <label for="waitlist-device" class="label-quiet mb-2 block">Gaming device</label>
         <select
           id="waitlist-device"
           v-model="form.device"
           name="device"
-          class="h-[52px] w-full appearance-none rounded-[10px] bg-midnight px-4 text-base text-pure-white ring-1 ring-inset ring-border transition-all duration-200 focus:ring-electric-lime focus:outline-none"
+          class="field appearance-none"
         >
           <option v-for="opt in deviceOptions" :key="opt.value" :value="opt.value">
             {{ opt.label }}
@@ -229,7 +217,8 @@ async function handleSubmit() {
       <button
         type="submit"
         :disabled="isLoading"
-        class="inline-flex h-[52px] min-w-[200px] items-center justify-center gap-2.5 rounded-[10px] bg-electric-lime px-8 text-sm font-semibold tracking-wide text-midnight uppercase transition-colors duration-200 hover:bg-lime-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-electric-lime disabled:cursor-not-allowed disabled:opacity-60"
+        class="btn-primary w-full whitespace-nowrap"
+        style="min-width: 200px"
       >
         <svg
           v-if="isLoading"
@@ -253,10 +242,11 @@ async function handleSubmit() {
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
           />
         </svg>
-        {{ isLoading ? 'Joining…' : 'Join the waitlist' }}
+        <span v-if="isLoading" class="whitespace-nowrap">Joining…</span>
+        <span v-else class="whitespace-nowrap">Join waitlist</span>
       </button>
 
-      <p class="text-[13px] leading-relaxed text-muted-slate">
+      <p class="text-sm leading-relaxed text-muted-slate">
         By joining, you agree to get product and launch updates from Eosmash. Unsubscribe
         whenever you want.
         <RouterLink
@@ -290,11 +280,11 @@ async function handleSubmit() {
           </svg>
         </span>
         <h3 class="text-xl font-semibold tracking-tight text-pure-white md:text-2xl">
-          You're on the list!
+          You&rsquo;re on the list!
         </h3>
       </div>
       <p class="max-w-md text-[15px] leading-relaxed text-muted-slate">
-        You're in. We will keep you posted as launch gets closer.
+        You&rsquo;re in. We will keep you posted as launch gets closer.
       </p>
     </div>
   </div>

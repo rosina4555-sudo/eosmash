@@ -25,7 +25,7 @@ export class SettingsScene extends Phaser.Scene {
     createEyebrow(this, GAME_WIDTH / 2, 64, 'GAME OPTIONS')
 
     const title = this.add
-      .text(GAME_WIDTH / 2, 110, 'SETTINGS', uiText('48px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, 110, 'SETTINGS', uiText('48px', '#FFFFFF', true, true))
       .setOrigin(0.5)
     tracked(title, 8)
 
@@ -54,8 +54,8 @@ export class SettingsScene extends Phaser.Scene {
         GAME_WIDTH / 2,
         545,
         IS_TOUCH
-          ? 'TOUCH: ARROWS TO MOVE · JUMP · LIGHT · HEAVY · BLOCK'
-          : 'A / D  MOVE      W  JUMP      J  LIGHT      K  HEAVY      L  BLOCK      ESC  PAUSE',
+          ? 'TOUCH: MOVE · CROUCH · JUMP · LIGHT · HEAVY · BLOCK · SPECIAL'
+          : 'A / D  MOVE      W  JUMP      S  CROUCH      J  LIGHT      K  HEAVY      L  BLOCK      U  SPECIAL',
         uiText('14px', '#97A5B9', true),
       )
       .setOrigin(0.5)

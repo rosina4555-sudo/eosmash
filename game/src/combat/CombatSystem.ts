@@ -32,10 +32,16 @@ export function resolveHit(attacker: Fighter, defender: Fighter): HitResult | nu
   if (!attack) return null
   if (defender.phase === 'ko') return null
 
+  if (attacker.hitsLanded > 0 && attack.hitGapMs) {
+    const scene = attacker.sprite.scene
+    if (scene.time.now - attacker.lastHitMs < attack.hitGapMs) return null
+  }
+
   const hitbox = getHitboxRect(attacker, attack)
   const hurtbox = getHurtboxRect(defender)
   if (!Phaser.Geom.Intersects.RectangleToRectangle(hitbox, hurtbox)) return null
 
-  attacker.hasHitTarget = true
-  return defender.takeHit(attack, attacker)
+  const result = defender.takeHit(attack, attacker)
+  attacker.registerHit()
+  return result
 }

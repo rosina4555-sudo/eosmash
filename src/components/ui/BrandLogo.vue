@@ -22,11 +22,11 @@ withDefaults(
       aria-hidden="true"
     >
       <g transform="translate(11 0) skewX(-18)">
-        <rect x="14" y="12" width="9" height="40" fill="#FFFFFF" />
-        <rect x="14" y="12" width="34" height="9" fill="#FFFFFF" />
-        <rect x="14" y="27.5" width="26" height="9" fill="#C6F36A" />
-        <rect x="44" y="27.5" width="7" height="9" fill="#C6F36A" />
-        <rect x="14" y="43" width="34" height="9" fill="#FFFFFF" />
+        <rect x="14" y="12" width="9" height="40" fill="var(--color-pure-white)" />
+        <rect x="14" y="12" width="34" height="9" fill="var(--color-pure-white)" />
+        <rect x="14" y="27.5" width="26" height="9" fill="var(--color-electric-lime)" />
+        <rect x="44" y="27.5" width="7" height="9" fill="var(--color-electric-lime)" />
+        <rect x="14" y="43" width="34" height="9" fill="var(--color-pure-white)" />
       </g>
     </svg>
     <span

@@ -11,6 +11,36 @@ let portraitMq: MediaQueryList | null = null
 let lockAttempted = false
 let pausedScenes: Array<import('phaser').Scene> = []
 
+const GAME_FONTS_URL =
+  'https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800&display=swap'
+
+async function loadGameFonts(): Promise<void> {
+  let link = document.getElementById('eosmash-arena-fonts') as HTMLLinkElement | null
+  if (!link) {
+    link = document.createElement('link')
+    link.id = 'eosmash-arena-fonts'
+    link.rel = 'stylesheet'
+    link.href = GAME_FONTS_URL
+    document.head.appendChild(link)
+    await new Promise<void>((resolve) => {
+      const done = () => resolve()
+      link!.onload = done
+      link!.onerror = done
+      setTimeout(done, 4000)
+    })
+  }
+  try {
+    await Promise.all([
+      document.fonts.load('16px Bungee'),
+      document.fonts.load('700 16px Nunito'),
+      document.fonts.load('400 16px Nunito'),
+    ])
+    await document.fonts.ready
+  } catch {
+    // Fonts will fall back to system-ui if loading fails.
+  }
+}
+
 function syncMedia() {
   isTouch.value = coarseMq?.matches ?? false
   showRotate.value = isTouch.value && (portraitMq?.matches ?? false)
@@ -40,7 +70,7 @@ function tryLockOrientation() {
 
 watch(showRotate, (v) => setCovered(v))
 
-onMounted(() => {
+onMounted(async () => {
   coarseMq = window.matchMedia('(pointer: coarse)')
   portraitMq = window.matchMedia('(orientation: portrait)')
   coarseMq.addEventListener('change', syncMedia)
@@ -48,6 +78,7 @@ onMounted(() => {
   syncMedia()
   window.addEventListener('pointerdown', tryLockOrientation)
 
+  await loadGameFonts()
   if (host.value) {
     game = createArenaGame(host.value)
     setCovered(showRotate.value)

@@ -46,14 +46,6 @@ const categories = [
         :style="leftStyle"
       >
         <div class="max-w-xl">
-          <div class="mb-5 flex items-center gap-3">
-            <span class="block h-[3px] w-3.5 -skew-x-[28deg] bg-electric-lime" aria-hidden="true" />
-            <p
-              class="text-[10px] font-semibold uppercase tracking-[0.2em] text-electric-lime md:text-xs md:tracking-[0.28em]"
-            >
-              Games
-            </p>
-          </div>
           <h2
             id="games-heading"
             class="text-[28px] font-bold leading-[1.1] tracking-[-0.02em] text-pure-white md:text-[42px] lg:text-[48px]"
@@ -65,10 +57,8 @@ const categories = [
             around titles where skill is the only thing that matters.
           </p>
         </div>
-        <p
-          class="shrink-0 self-start rounded-sm bg-elevated-navy px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-slate md:self-auto"
-        >
-          Games we're exploring
+        <p class="shrink-0 self-start rounded-sm bg-elevated-navy px-3.5 py-2 text-sm text-muted-slate md:self-auto">
+          Games we&rsquo;re exploring
         </p>
       </div>
 
@@ -79,20 +69,19 @@ const categories = [
         <article
           v-for="(cat, i) in categories"
           :key="cat.title"
-          class="group relative overflow-hidden rounded-[14px] bg-deep-navy reveal"
+          class="group card relative overflow-hidden reveal"
           :class="[cat.span, { 'is-visible': cardsVisible }]"
           :style="itemStyle(i)"
         >
-          <div class="absolute inset-0 overflow-hidden" :class="cat.aspect">
+          <div class="img-frame absolute inset-0 overflow-hidden minmax-0" :class="cat.aspect">
             <img
               :src="cat.image"
               :alt="`${cat.title} gaming category`"
-              loading="lazy"
-              class="img-zoom h-full w-full object-cover grayscale-[0.45] contrast-[1.12] transition-all duration-500 group-hover:grayscale-0"
+              :loading="i === 0 ? 'eager' : 'lazy'"
+              :fetchpriority="i === 0 ? 'high' : 'auto'"
+              class="h-full w-full object-cover grayscale-[0.45] contrast-[1.12]"
             />
-            <div
-              class="absolute inset-0 bg-[linear-gradient(to_top,rgba(11,16,32,0.92)_0%,rgba(11,16,32,0.4)_55%,rgba(11,16,32,0.12)_100%)]"
-            />
+            <div class="absolute inset-0 cat-scrim" />
           </div>
 
           <div
@@ -114,3 +103,14 @@ const categories = [
     </div>
   </section>
 </template>
+
+<style scoped>
+.cat-scrim {
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-midnight) 92%, transparent) 0%,
+    color-mix(in oklab, var(--color-midnight) 40%, transparent) 55%,
+    color-mix(in oklab, var(--color-midnight) 12%, transparent) 100%
+  );
+}
+</style>

@@ -3,6 +3,10 @@ import { AIController } from '../ai/AIController'
 import { getHitboxRect, getHurtboxRect, resolveHit, type HitResult } from '../combat/CombatSystem'
 import { FIGHTERS } from '../config/characters.config'
 import { GAME_HEIGHT, GAME_WIDTH, GROUND_Y, IS_TOUCH } from '../config/game.config'
+import {
+  METER_DEAL_SCALE,
+  METER_TAKE_SCALE,
+} from '../combat/AttackDefinitions'
 import { Fighter, type FighterPhase } from '../entities/Fighter'
 import { emptyInput, mergeInputs, type InputSnapshot } from '../input/InputSnapshot'
 import { KeyboardController } from '../input/KeyboardController'
@@ -10,6 +14,7 @@ import { TouchController } from '../input/TouchController'
 import { audio } from '../systems/AudioManager'
 import { MatchManager, type MatchMode } from '../systems/MatchManager'
 import { loadSettings } from '../systems/SettingsManager'
+import { ensureFighterAnims, preloadFighterArt, preloadStageArt } from '../textures/fighterArt'
 import { generatePlaceholderArt } from '../textures/placeholderArt'
 import { MobileControls } from '../ui/MobileControls'
 import {
@@ -80,8 +85,14 @@ export class ArenaScene extends Phaser.Scene {
     super('arena')
   }
 
+  preload() {
+    preloadFighterArt(this)
+    preloadStageArt(this)
+  }
+
   create(data?: MatchSceneData) {
     generatePlaceholderArt(this)
+    ensureFighterAnims(this)
     this.drawBackdrop()
     this.drawGround()
 
@@ -105,8 +116,8 @@ export class ArenaScene extends Phaser.Scene {
     this.resultOverlay = null
     this.pauseOverlay = null
 
-    this.player = new Fighter(this, FIGHTERS[this.playerKey], 400, GROUND_Y - 52)
-    this.opponent = new Fighter(this, FIGHTERS[this.opponentKey], 880, GROUND_Y - 52)
+    this.player = new Fighter(this, FIGHTERS[this.playerKey], 400, GROUND_Y)
+    this.opponent = new Fighter(this, FIGHTERS[this.opponentKey], 880, GROUND_Y)
 
     this.physics.add.collider(this.player.sprite, this.opponent.sprite)
     this.physics.add.existing(this.groundBody, true)
@@ -122,6 +133,8 @@ export class ArenaScene extends Phaser.Scene {
         light: Phaser.Input.Keyboard.KeyCodes.J,
         heavy: Phaser.Input.Keyboard.KeyCodes.K,
         block: Phaser.Input.Keyboard.KeyCodes.L,
+        crouch: Phaser.Input.Keyboard.KeyCodes.S,
+        special: Phaser.Input.Keyboard.KeyCodes.U,
       })
       this.p2Ctrl = new KeyboardController(this, {
         left: Phaser.Input.Keyboard.KeyCodes.LEFT,
@@ -130,6 +143,8 @@ export class ArenaScene extends Phaser.Scene {
         light: Phaser.Input.Keyboard.KeyCodes.COMMA,
         heavy: Phaser.Input.Keyboard.KeyCodes.PERIOD,
         block: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+        crouch: Phaser.Input.Keyboard.KeyCodes.DOWN,
+        special: Phaser.Input.Keyboard.KeyCodes.FORWARD_SLASH,
       })
       this.escKey = kb.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
       this.resetKey = kb.addKey(Phaser.Input.Keyboard.KeyCodes.R)
@@ -152,6 +167,7 @@ export class ArenaScene extends Phaser.Scene {
       false,
       FIGHTERS[this.playerKey].name.toUpperCase(),
       460,
+      FIGHTERS[this.playerKey].color,
     )
     this.opponentBar = this.createHealthBar(
       GAME_WIDTH - 36,
@@ -160,37 +176,38 @@ export class ArenaScene extends Phaser.Scene {
       true,
       FIGHTERS[this.opponentKey].name.toUpperCase(),
       460,
+      FIGHTERS[this.opponentKey].color,
     )
 
     const plateY = 18
     const plate = this.add.graphics()
     plate.fillStyle(UI.deep, 1)
-    plate.fillRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 10)
-    plate.lineStyle(2, UI.line, 1)
-    plate.strokeRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 10)
+    plate.fillRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 16)
+    plate.lineStyle(3, UI.line, 1)
+    plate.strokeRoundedRect(GAME_WIDTH / 2 - 72, plateY, 144, 96, 16)
     plate.fillStyle(UI.lime, 1)
     plate.fillRect(GAME_WIDTH / 2 - 36, plateY + 92, 72, 4)
 
     const timeLabel = this.add
-      .text(GAME_WIDTH / 2, plateY + 20, 'TIME', uiText('12px', '#97A5B9', true))
+      .text(GAME_WIDTH / 2, plateY + 20, 'TIME', uiText('12px', '#97A5B9', true, true))
       .setOrigin(0.5)
     tracked(timeLabel, 4)
 
     this.timerText = this.add
-      .text(GAME_WIDTH / 2, plateY + 56, '90', uiText('46px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, plateY + 56, '90', uiText('46px', '#FFFFFF', true, true))
       .setOrigin(0.5)
     this.subText = this.add
-      .text(GAME_WIDTH / 2, plateY + 110, '', uiText('13px', '#97A5B9', true))
+      .text(GAME_WIDTH / 2, plateY + 110, '', uiText('13px', '#97A5B9', true, true))
       .setOrigin(0.5, 0)
     tracked(this.subText, 3)
 
     this.countdownText = this.add
-      .text(GAME_WIDTH / 2, 310, '3', uiText('130px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, 310, '3', uiText('130px', '#C6F36A', true, true))
       .setOrigin(0.5)
     this.countdownText.setStroke('#05070f', 12)
 
     this.goText = this.add
-      .text(GAME_WIDTH / 2, 310, 'GO!', uiText('130px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, 310, 'GO!', uiText('130px', '#C6F36A', true, true))
       .setOrigin(0.5)
       .setVisible(false)
     this.goText.setStroke('#05070f', 12)
@@ -200,7 +217,7 @@ export class ArenaScene extends Phaser.Scene {
       .setStrokeStyle(2, UI.danger)
       .setVisible(false)
     this.bannerTextObj = this.add
-      .text(GAME_WIDTH / 2, 122, '', uiText('32px', '#FF7777', true))
+      .text(GAME_WIDTH / 2, 122, '', uiText('32px', '#FF7777', true, true))
       .setOrigin(0.5)
       .setVisible(false)
     tracked(this.bannerTextObj, 6)
@@ -209,7 +226,7 @@ export class ArenaScene extends Phaser.Scene {
       .text(
         GAME_WIDTH / 2,
         GAME_HEIGHT - 24,
-        'T PRACTICE · B HITBOXES · 1 2 3 AI DIFFICULTY',
+        'S CROUCH · U SPECIAL · J LIGHT · K HEAVY · L BLOCK · T PRACTICE · B HITBOXES',
         uiText('13px', '#97A5B9'),
       )
       .setOrigin(0.5)
@@ -246,6 +263,9 @@ export class ArenaScene extends Phaser.Scene {
       GAME_HEIGHT - GROUND_Y,
       0x17243b,
     )
+    if (this.textures.exists('stage-street')) {
+      this.groundBody.setVisible(false)
+    }
   }
 
   update(_time: number, delta: number) {
@@ -352,18 +372,69 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private playWhoosh(prevPlayer: FighterPhase, prevOpponent: FighterPhase) {
-    if (this.player.phase === 'active' && prevPlayer !== 'active') {
-      audio.play(this.player.currentAttack?.id === 'heavy' ? 'whoosh_heavy' : 'whoosh_light')
+    this.playFighterWhoosh(this.player, prevPlayer)
+    this.playFighterWhoosh(this.opponent, prevOpponent)
+    this.updateMeterAuras()
+    this.updateActiveTrails()
+  }
+
+  private playFighterWhoosh(fighter: Fighter, prev: FighterPhase) {
+    if (fighter.phase !== 'active' || prev === 'active') return
+    const attack = fighter.currentAttack
+    const heavy = attack?.heavy ?? false
+    const powered = attack?.powered ?? false
+
+    if (powered) {
+      this.spawnPowerFlash(fighter)
+    } else {
+      audio.play(heavy ? 'whoosh_heavy' : 'whoosh_light')
+      audio.play(heavy ? 'effort_heavy' : 'effort_light')
     }
-    if (this.opponent.phase === 'active' && prevOpponent !== 'active') {
-      audio.play(this.opponent.currentAttack?.id === 'heavy' ? 'whoosh_heavy' : 'whoosh_light')
-    }
+
+    if (attack?.id === 'uppercut') this.spawnUppercutStreak(fighter)
+    if (attack?.id === 'slide') this.spawnSlideDust(fighter)
+    if (attack?.id === 'special') this.spawnAfterimage(fighter, powered)
   }
 
   private onHitResolved(attacker: Fighter, defender: Fighter, result: HitResult) {
-    const attackId = attacker.currentAttack?.id ?? 'light'
-    audio.play(result.blocked ? 'block' : attackId === 'heavy' ? 'hit_heavy' : 'hit_light')
-    this.spawnImpact(defender.sprite.x, defender.sprite.y - 24, result.blocked)
+    const attack = attacker.currentAttack
+    const heavy = attack?.heavy ?? false
+    const powered = attack?.powered ?? false
+    const rawDamage = attack?.damage ?? 0
+
+    audio.play(result.blocked ? 'block' : heavy ? 'hit_heavy' : 'hit_light')
+    this.spawnImpact(
+      defender.sprite.x,
+      defender.sprite.y - 55,
+      result.blocked,
+      heavy || powered,
+      powered,
+    )
+
+    // Meter: deal → attacker, take/block → defender
+    if (this.match.isFightActive) {
+      const dealGain = (result.blocked ? rawDamage * 0.35 : rawDamage) * METER_DEAL_SCALE
+      if (attacker.addMeter(dealGain)) {
+        audio.play('meter_full')
+        this.spawnMeterFullPulse(attacker)
+      }
+      const takeGain = result.blocked
+        ? rawDamage * METER_TAKE_SCALE * 0.5
+        : rawDamage * METER_TAKE_SCALE
+      if (defender.addMeter(takeGain)) {
+        audio.play('meter_full')
+        this.spawnMeterFullPulse(defender)
+      }
+    }
+
+    if (result.blocked) {
+      audio.play('effort_light')
+    } else if (defender.health <= 0) {
+      audio.play('scream_ko')
+      this.spawnKoBurst(defender.sprite.x, defender.sprite.y - 40)
+    } else {
+      audio.play(heavy ? 'hurt_heavy' : 'hurt_light')
+    }
   }
 
   private onMatchEndFx() {
@@ -387,16 +458,17 @@ export class ArenaScene extends Phaser.Scene {
     if (body.blocked.down) body.setVelocityY(-velocity)
   }
 
-  private spawnImpact(x: number, y: number, blocked: boolean) {
+  private spawnImpact(x: number, y: number, blocked: boolean, heavy = false, powered = false) {
+    const ringColor = blocked ? 0x9fc6ff : powered ? 0xfff3a0 : heavy ? 0xffc857 : 0xc6f36a
     const ring = this.add
-      .circle(x, y, 10, blocked ? 0x9fc6ff : 0xc6f36a)
-      .setAlpha(0.9)
-    const core = this.add.circle(x, y, 5, blocked ? 0x9fc6ff : 0xffffff)
+      .circle(x, y, powered ? 14 : heavy ? 12 : 10, ringColor)
+      .setAlpha(0.95)
+    const core = this.add.circle(x, y, powered ? 7 : 5, blocked ? 0x9fc6ff : 0xffffff)
     this.tweens.add({
       targets: ring,
-      scale: 2.4,
+      scale: powered ? 3.2 : heavy ? 2.8 : 2.4,
       alpha: 0,
-      duration: 220,
+      duration: powered ? 280 : 220,
       onComplete: () => ring.destroy(),
     })
     this.tweens.add({
@@ -406,6 +478,218 @@ export class ArenaScene extends Phaser.Scene {
       duration: 160,
       onComplete: () => core.destroy(),
     })
+
+    const sparkCount = powered ? 14 : heavy ? 8 : 4
+    const sparkColor = blocked ? 0x9fc6ff : powered ? 0xffe566 : heavy ? 0xffb347 : 0xc6f36a
+    for (let i = 0; i < sparkCount; i++) {
+      const angle = (Math.PI * 2 * i) / sparkCount + Math.random() * 0.4
+      const dist = (heavy ? 28 : 18) + Math.random() * (powered ? 30 : 14)
+      const s = this.add.circle(x, y, powered ? 3 : 2, sparkColor).setAlpha(0.95)
+      this.tweens.add({
+        targets: s,
+        x: x + Math.cos(angle) * dist,
+        y: y + Math.sin(angle) * dist,
+        scale: 0,
+        alpha: 0,
+        duration: 180 + Math.random() * 120,
+        ease: 'quad.out',
+        onComplete: () => s.destroy(),
+      })
+    }
+
+    if (powered || heavy) {
+      const flash = this.add.circle(x, y, 6, 0xffffff).setAlpha(0.7)
+      this.tweens.add({
+        targets: flash,
+        scale: heavy ? 5 : 7,
+        alpha: 0,
+        duration: 140,
+        onComplete: () => flash.destroy(),
+      })
+    }
+  }
+
+  private spawnPowerFlash(fighter: Fighter) {
+    const { x, y } = fighter.sprite
+    const color = fighter.sprite.texture.key === 'rex' ? 0xf59e42 : 0x2dd4bf
+    this.cameras.main.flash(120, 255, 255, 255, true)
+    this.cameras.main.shake(140, 0.004)
+
+    const ring = this.add.circle(x, y - 50, 16, color, 0.85).setStrokeStyle(3, 0xffffff, 0.9)
+    this.tweens.add({
+      targets: ring,
+      scale: 5,
+      alpha: 0,
+      duration: 320,
+      ease: 'quad.out',
+      onComplete: () => ring.destroy(),
+    })
+    for (let i = 0; i < 10; i++) {
+      const a = (Math.PI * 2 * i) / 10
+      const p = this.add.circle(x, y - 50, 3, color)
+      this.tweens.add({
+        targets: p,
+        x: x + Math.cos(a) * 70,
+        y: y - 50 + Math.sin(a) * 70,
+        alpha: 0,
+        scale: 0,
+        duration: 260 + Math.random() * 80,
+        ease: 'quad.out',
+        onComplete: () => p.destroy(),
+      })
+    }
+  }
+
+  private spawnAfterimage(fighter: Fighter, powered: boolean) {
+    const ghosts = powered ? 4 : 2
+    for (let i = 0; i < ghosts; i++) {
+      this.time.delayedCall(i * 50, () => {
+        if (fighter.phase !== 'active' && fighter.phase !== 'recovery') return
+        const g = this.add
+          .image(fighter.sprite.x, fighter.sprite.y, fighter.sprite.texture.key)
+          .setOrigin(fighter.sprite.originX, fighter.sprite.originY)
+          .setFlipX(fighter.sprite.flipX)
+          .setAngle(fighter.sprite.angle)
+          .setAlpha(powered ? 0.35 : 0.22)
+          .setTint(powered ? (fighter.sprite.texture.key === 'rex' ? 0xf59e42 : 0x2dd4bf) : 0xffffff)
+          .setBlendMode(Phaser.BlendModes.ADD)
+        this.tweens.add({
+          targets: g,
+          alpha: 0,
+          duration: 220,
+          onComplete: () => g.destroy(),
+        })
+      })
+    }
+  }
+
+  private spawnSlideDust(fighter: Fighter) {
+    const body = fighter.sprite.body as Phaser.Physics.Arcade.Body
+    for (let i = 0; i < 4; i++) {
+      this.time.delayedCall(i * 45, () => {
+        if (fighter.phase !== 'active') return
+        const d = this.add
+          .ellipse(body.center.x, body.y + body.height, 16, 7, 0x97a5b9)
+          .setAlpha(0.45)
+        this.tweens.add({
+          targets: d,
+          alpha: 0,
+          scaleX: 1.6,
+          duration: 280,
+          onComplete: () => d.destroy(),
+        })
+      })
+    }
+  }
+
+  private spawnUppercutStreak(fighter: Fighter) {
+    const color = fighter.sprite.texture.key === 'rex' ? 0xf59e42 : 0x2dd4bf
+    const { x, y } = fighter.sprite
+    for (let i = 0; i < 5; i++) {
+      const line = this.add.rectangle(
+        x + (i - 2) * 10,
+        y - 40 - i * 8,
+        3,
+        36 + i * 6,
+        color,
+        0.75,
+      )
+      this.tweens.add({
+        targets: line,
+        y: line.y - 50,
+        alpha: 0,
+        duration: 240 + i * 30,
+        ease: 'quad.out',
+        onComplete: () => line.destroy(),
+      })
+    }
+  }
+
+  private spawnMeterFullPulse(fighter: Fighter) {
+    const color = fighter.sprite.texture.key === 'rex' ? 0xf59e42 : 0x2dd4bf
+    const ring = this.add
+      .circle(fighter.sprite.x, fighter.sprite.y - 50, 12, color, 0.5)
+      .setStrokeStyle(2, color, 0.9)
+    this.tweens.add({
+      targets: ring,
+      scale: 3.5,
+      alpha: 0,
+      duration: 400,
+      onComplete: () => ring.destroy(),
+    })
+  }
+
+  private spawnKoBurst(x: number, y: number) {
+    for (let i = 0; i < 18; i++) {
+      const a = (Math.PI * 2 * i) / 18 + Math.random() * 0.3
+      const dist = 40 + Math.random() * 50
+      const color = i % 2 === 0 ? 0xc6f36a : 0xffffff
+      const p = this.add.circle(x, y, 3 + Math.random() * 3, color)
+      this.tweens.add({
+        targets: p,
+        x: x + Math.cos(a) * dist,
+        y: y + Math.sin(a) * dist,
+        alpha: 0,
+        scale: 0,
+        duration: 320 + Math.random() * 200,
+        ease: 'quad.out',
+        onComplete: () => p.destroy(),
+      })
+    }
+    const ring = this.add.circle(x, y, 12, 0xffffff, 0.8)
+    this.tweens.add({
+      targets: ring,
+      scale: 6,
+      alpha: 0,
+      duration: 360,
+      onComplete: () => ring.destroy(),
+    })
+  }
+
+  private readonly auraTimers = { player: 0, opponent: 0 }
+
+  private updateMeterAuras() {
+    if (!this.match.isFightActive) return
+    this.tickAura(this.player, 'player')
+    this.tickAura(this.opponent, 'opponent')
+  }
+
+  private tickAura(fighter: Fighter, slot: 'player' | 'opponent') {
+    if (!fighter.isMeterFull || fighter.phase === 'ko') return
+    this.auraTimers[slot] += 16.7
+    if (this.auraTimers[slot] < 90) return
+    this.auraTimers[slot] = 0
+    const color = fighter.sprite.texture.key === 'rex' ? 0xf59e42 : 0x2dd4bf
+    const body = fighter.sprite.body as Phaser.Physics.Arcade.Body
+    const px = body.center.x + (Math.random() - 0.5) * 30
+    const py = body.y + body.height - Math.random() * 20
+    const p = this.add.circle(px, py, 2 + Math.random() * 2, color, 0.75)
+    this.tweens.add({
+      targets: p,
+      y: py - 36 - Math.random() * 20,
+      alpha: 0,
+      duration: 420,
+      ease: 'quad.out',
+      onComplete: () => p.destroy(),
+    })
+  }
+
+  private trailAcc = 0
+  private updateActiveTrails() {
+    const anySpecial =
+      (this.player.phase === 'active' && this.player.currentAttack?.id === 'special') ||
+      (this.opponent.phase === 'active' && this.opponent.currentAttack?.id === 'special')
+    if (!anySpecial) {
+      this.trailAcc = 0
+      return
+    }
+    this.trailAcc += 16.7
+    if (this.trailAcc < 55) return
+    this.trailAcc = 0
+    for (const f of [this.player, this.opponent]) {
+      if (f.phase !== 'active' || f.currentAttack?.id !== 'special') continue
+      this.spawnAfterimage(f, f.isPowered)
+    }
   }
 
   private spawnDust(x: number, y: number) {
@@ -429,6 +713,7 @@ export class ArenaScene extends Phaser.Scene {
       const grounded = body.blocked.down
       if (grounded && !prev) {
         this.spawnDust(body.center.x, body.y + body.height)
+        if (this.match.state !== 'countdown') audio.play('land')
       }
       return grounded
     }
@@ -500,7 +785,7 @@ export class ArenaScene extends Phaser.Scene {
       winner === 'draw' ? 'DRAW' : `${FIGHTERS[winner].name.toUpperCase()} WINS`
     const titleColor = winner === 'draw' ? '#97A5B9' : '#C6F36A'
     const titleText = this.add
-      .text(GAME_WIDTH / 2, 240, title, uiText('64px', titleColor, true))
+      .text(GAME_WIDTH / 2, 240, title, uiText('64px', titleColor, true, true))
       .setOrigin(0.5)
     tracked(titleText, 6)
     titleText.setStroke('#05070f', 10)
@@ -511,7 +796,7 @@ export class ArenaScene extends Phaser.Scene {
         GAME_WIDTH / 2,
         312,
         reason === 'ko' ? 'KNOCKOUT' : 'TIMEOUT',
-        uiText('18px', '#97A5B9', true),
+        uiText('18px', '#97A5B9', true, true),
       )
       .setOrigin(0.5)
     tracked(reasonText, 6)
@@ -523,13 +808,13 @@ export class ArenaScene extends Phaser.Scene {
 
     const statsPlate = this.add.graphics()
     statsPlate.fillStyle(UI.deep, 1)
-    statsPlate.fillRoundedRect(GAME_WIDTH / 2 - 290, 352, 580, 56, 10)
+    statsPlate.fillRoundedRect(GAME_WIDTH / 2 - 290, 352, 580, 56, 14)
     statsPlate.lineStyle(2, UI.line, 1)
-    statsPlate.strokeRoundedRect(GAME_WIDTH / 2 - 290, 352, 580, 56, 10)
+    statsPlate.strokeRoundedRect(GAME_WIDTH / 2 - 290, 352, 580, 56, 14)
     container.add(statsPlate)
 
     const statsText = this.add
-      .text(GAME_WIDTH / 2, 380, stats, uiText('18px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, 380, stats, uiText('18px', '#FFFFFF', true, true))
       .setOrigin(0.5)
     tracked(statsText, 2)
     container.add(statsText)
@@ -585,7 +870,7 @@ export class ArenaScene extends Phaser.Scene {
     container.add(eyebrow)
 
     const title = this.add
-      .text(GAME_WIDTH / 2, 310, 'PAUSED', uiText('64px', '#C6F36A', true))
+      .text(GAME_WIDTH / 2, 310, 'PAUSED', uiText('64px', '#C6F36A', true, true))
       .setOrigin(0.5)
     tracked(title, 10)
     title.setStroke('#05070f', 10)
@@ -660,29 +945,44 @@ export class ArenaScene extends Phaser.Scene {
     fromRight: boolean,
     name: string,
     width: number,
+    meterColor: number,
   ): HealthBar {
     const barY = y + 28
     const barH = 26
     const inset = 3
+    const meterY = barY + barH + 6
+    const meterH = 8
 
     const nameText = this.add
-      .text(x, y, name, uiText('15px', '#FFFFFF', true))
+      .text(x, y, name, uiText('15px', '#FFFFFF', true, true))
       .setOrigin(fromRight ? 1 : 0, 0)
     tracked(nameText, 4)
 
     const numText = this.add
-      .text(fromRight ? x - width : x + width, y, '', uiText('15px', '#97A5B9', true))
+      .text(fromRight ? x - width : x + width, y, '', uiText('15px', '#97A5B9', true, true))
       .setOrigin(fromRight ? 0 : 1, 0)
     tracked(numText, 1)
 
     const trackX = fromRight ? x - width : x
     const track = this.add.graphics()
     track.fillStyle(UI.deep, 1)
-    track.fillRoundedRect(trackX, barY, width, barH, 6)
-    track.lineStyle(2, UI.line, 1)
-    track.strokeRoundedRect(trackX, barY, width, barH, 6)
+    track.fillRoundedRect(trackX, barY, width, barH, 9)
+    track.lineStyle(3, UI.line, 1)
+    track.strokeRoundedRect(trackX, barY, width, barH, 9)
 
     const fillGfx = this.add.graphics()
+
+    // Special meter under health
+    const meterTrack = this.add.graphics()
+    meterTrack.fillStyle(UI.deep, 0.95)
+    meterTrack.fillRoundedRect(trackX, meterY, width, meterH, 4)
+    meterTrack.lineStyle(1, UI.line, 0.8)
+    meterTrack.strokeRoundedRect(trackX, meterY, width, meterH, 4)
+    const meterFill = this.add.graphics()
+    const meterLabel = this.add
+      .text(fromRight ? trackX - 6 : trackX + width + 6, meterY + meterH / 2, 'SP', uiText('9px', '#97A5B9', true, true))
+      .setOrigin(fromRight ? 1 : 0, 0.5)
+    tracked(meterLabel, 1)
 
     const update = (fighter: Fighter) => {
       const pct = Math.max(0, Math.min(1, fighter.health / fighter.maxHealth))
@@ -690,8 +990,20 @@ export class ArenaScene extends Phaser.Scene {
       const fw = Math.max(12, (width - inset * 2) * pct)
       const fx = fromRight ? x - inset - fw : x + inset
       fillGfx.fillStyle(color, 1)
-      fillGfx.fillRoundedRect(fx, barY + inset, fw, barH - inset * 2, 4)
+      fillGfx.fillRoundedRect(fx, barY + inset, fw, barH - inset * 2, 6)
       numText.setText(String(Math.ceil(fighter.health)))
+
+      const mpct = Math.max(0, Math.min(1, fighter.meterPct))
+      meterFill.clear()
+      const mw = Math.max(mpct > 0 ? 6 : 0, (width - 6) * mpct)
+      const mx = fromRight ? trackX + width - 3 - mw : trackX + 3
+      const full = fighter.isMeterFull
+      meterFill.fillStyle(full ? 0xffffff : meterColor, full ? 1 : 0.9)
+      meterFill.fillRoundedRect(mx, meterY + 2, mw, meterH - 4, 3)
+      if (full) {
+        meterFill.lineStyle(2, meterColor, 1)
+        meterFill.strokeRoundedRect(trackX + 1, meterY + 1, width - 2, meterH - 2, 4)
+      }
     }
 
     return { update }
@@ -722,6 +1034,32 @@ export class ArenaScene extends Phaser.Scene {
   }
 
   private drawBackdrop() {
+    if (this.textures.exists('stage-street')) {
+      this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'stage-street').setOrigin(0.5)
+
+      const sign = this.add.rectangle(640, 140, 420, 86, 0x111a2e, 0.85)
+      sign.setStrokeStyle(3, 0xc6f36a).setAlpha(0.9)
+      this.add
+        .text(640, 140, 'EOSMASH  ARENA', uiText('36px', '#C6F36A', false, true))
+        .setOrigin(0.5)
+
+      const light = this.add.ellipse(640, 500, 900, 260, 0xc6f36a).setAlpha(0.04)
+      this.tweens.add({
+        targets: light,
+        alpha: { from: 0.03, to: 0.08 },
+        duration: 2600,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inout',
+      })
+
+      this.add.rectangle(GAME_WIDTH / 2, GROUND_Y + 2, GAME_WIDTH, 4, 0x26344c).setAlpha(0.5)
+      this.add
+        .rectangle(GAME_WIDTH / 2, GROUND_Y + 4, 260, 3, 0xc6f36a)
+        .setAlpha(0.5)
+      return
+    }
+
     this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0b1020)
 
     for (let i = 0; i < 8; i++) {
@@ -741,13 +1079,13 @@ export class ArenaScene extends Phaser.Scene {
     const sign = this.add.rectangle(640, 140, 420, 86, 0x111a2e)
     sign.setStrokeStyle(3, 0xc6f36a).setAlpha(0.9)
     this.add
-      .text(640, 140, 'EOSMASH  ARENA', uiText('36px', '#C6F36A'))
+      .text(640, 140, 'EOSMASH  ARENA', uiText('36px', '#C6F36A', false, true))
       .setOrigin(0.5)
 
     const sideSign = this.add.rectangle(170, 400, 150, 54, 0x17243b)
     sideSign.setStrokeStyle(2, 0xff7777).setAlpha(0.85)
     this.add
-      .text(170, 400, 'CIRCUIT', uiText('20px', '#FF7777'))
+      .text(170, 400, 'CIRCUIT', uiText('20px', '#FF7777', false, true))
       .setOrigin(0.5)
       .setAlpha(0.9)
 

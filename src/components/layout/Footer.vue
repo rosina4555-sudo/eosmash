@@ -27,14 +27,12 @@ const navLinks = [
         </div>
 
         <nav class="lg:col-span-3 lg:col-start-7" aria-label="Footer">
-          <h3 class="mb-5 text-[11px] font-semibold tracking-[0.2em] text-soft-white uppercase">
-            Navigate
-          </h3>
+          <h3 class="mb-5 text-base font-semibold text-soft-white">Navigate</h3>
           <ul class="space-y-3.5">
             <li v-for="link in navLinks" :key="link.href">
               <a
                 :href="link.href"
-                class="text-sm text-muted-slate transition-colors hover:text-electric-lime"
+                class="text-sm text-muted-slate transition-colors duration-200 hover:text-electric-lime"
               >
                 {{ link.label }}
               </a>
@@ -43,14 +41,12 @@ const navLinks = [
         </nav>
 
         <nav class="lg:col-span-2" aria-label="Legal">
-          <h3 class="mb-5 text-[11px] font-semibold tracking-[0.2em] text-soft-white uppercase">
-            Legal
-          </h3>
+          <h3 class="mb-5 text-base font-semibold text-soft-white">Legal</h3>
           <ul class="space-y-3.5">
             <li>
               <RouterLink
                 to="/privacy"
-                class="text-sm text-muted-slate transition-colors hover:text-electric-lime"
+                class="text-sm text-muted-slate transition-colors duration-200 hover:text-electric-lime"
               >
                 Privacy Policy
               </RouterLink>
@@ -58,7 +54,7 @@ const navLinks = [
             <li>
               <RouterLink
                 to="/terms"
-                class="text-sm text-muted-slate transition-colors hover:text-electric-lime"
+                class="text-sm text-muted-slate transition-colors duration-200 hover:text-electric-lime"
               >
                 Terms of Service
               </RouterLink>
@@ -73,12 +69,8 @@ const navLinks = [
           eligibility rules and our terms of service.
         </p>
         <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-[13px] text-muted-slate">
-            © {{ year }} Eosmash. All rights reserved.
-          </p>
-          <p class="text-[11px] font-semibold tracking-[0.2em] text-muted-slate/70 uppercase">
-            Ghana · Africa
-          </p>
+          <p class="text-[13px] text-muted-slate">© {{ year }} Eosmash.</p>
+          <p class="text-sm text-muted-slate">Ghana, Africa</p>
         </div>
       </div>
     </div>

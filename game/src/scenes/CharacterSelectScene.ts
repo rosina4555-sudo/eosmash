@@ -3,6 +3,7 @@ import type { AIDifficulty } from '../ai/DifficultyProfiles'
 import { FIGHTERS } from '../config/characters.config'
 import { GAME_HEIGHT, GAME_WIDTH } from '../config/game.config'
 import { generatePlaceholderArt } from '../textures/placeholderArt'
+import { ensureFighterAnims, hasFighterArt, preloadFighterArt } from '../textures/fighterArt'
 import { audio } from '../systems/AudioManager'
 import { loadSettings, saveSettings } from '../systems/SettingsManager'
 import {
@@ -68,8 +69,13 @@ export class CharacterSelectScene extends Phaser.Scene {
     super('character-select')
   }
 
+  preload() {
+    preloadFighterArt(this)
+  }
+
   create(data?: { mode?: MatchMode }) {
     generatePlaceholderArt(this)
+    ensureFighterAnims(this)
     drawMenuBackdrop(this, GAME_WIDTH, GAME_HEIGHT)
 
     this.mode = data?.mode === 'practice' ? 'practice' : 'quick'
@@ -87,7 +93,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     )
 
     const title = this.add
-      .text(GAME_WIDTH / 2, 84, 'SELECT YOUR FIGHTER', uiText('44px', '#FFFFFF', true))
+      .text(GAME_WIDTH / 2, 84, 'SELECT YOUR FIGHTER', uiText('44px', '#FFFFFF', true, true))
       .setOrigin(0.5)
     tracked(title, 4)
 
@@ -133,7 +139,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     const accent = this.add.graphics()
     const badgeBg = this.add.graphics()
     const badgeText = this.add
-      .text(cx + CARD_W / 2 - 24, cy - cardH / 2 + 26, 'SELECTED', uiText('12px', '#0B1020', true))
+      .text(cx + CARD_W / 2 - 24, cy - cardH / 2 + 26, 'SELECTED', uiText('12px', '#0B1020', true, true))
       .setOrigin(1, 0.5)
       .setVisible(false)
     tracked(badgeText, 2)
@@ -141,9 +147,9 @@ export class CharacterSelectScene extends Phaser.Scene {
     const drawPanel = (selected: boolean, hover: boolean) => {
       panel.clear()
       panel.fillStyle(UI.panel, 1)
-      panel.fillRoundedRect(cx - CARD_W / 2, cy - cardH / 2, CARD_W, cardH, 14)
-      panel.lineStyle(selected ? 3 : 2, selected ? UI.lime : hover ? UI.lime : UI.line, 1)
-      panel.strokeRoundedRect(cx - CARD_W / 2, cy - cardH / 2, CARD_W, cardH, 14)
+      panel.fillRoundedRect(cx - CARD_W / 2, cy - cardH / 2, CARD_W, cardH, 22)
+      panel.lineStyle(selected ? 4 : 3, selected ? UI.lime : hover ? UI.lime : UI.line, 1)
+      panel.strokeRoundedRect(cx - CARD_W / 2, cy - cardH / 2, CARD_W, cardH, 22)
 
       accent.clear()
       badgeBg.clear()
@@ -158,16 +164,26 @@ export class CharacterSelectScene extends Phaser.Scene {
     drawPanel(false, false)
     this.cardRedraws.push(() => drawPanel(this.selected === card.key, false))
 
-    const portrait = this.add.sprite(cx, cy - 126, def.key).setScale(2.4)
-    portrait.setFlipX(false)
+    const portrait = this.add.sprite(cx, cy - 126, def.key)
+    if (hasFighterArt(this, def.key)) {
+      portrait.setOrigin(def.artOriginX ?? 0.5, 1)
+      portrait.setScale(230 / def.bodyHeight)
+      portrait.setY(cy - 126 + 115)
+      portrait.play(`${def.key}-idle`)
+      portrait.setFlipX(card.key === 'nyra')
+    } else {
+      portrait.setOrigin(0.5, 0.5)
+      portrait.setScale(2.4)
+      portrait.setFlipX(false)
+    }
 
     const name = this.add
-      .text(cx, cy - 44, card.title, uiText('36px', '#FFFFFF', true))
+      .text(cx, cy - 44, card.title, uiText('36px', '#FFFFFF', true, true))
       .setOrigin(0.5)
     tracked(name, 6)
 
     const style = this.add
-      .text(cx, cy - 12, card.style, uiText('14px', '#C6F36A', true))
+      .text(cx, cy - 12, card.style, uiText('14px', '#C6F36A', true, true))
       .setOrigin(0.5)
     tracked(style, 4)
 
@@ -195,7 +211,7 @@ export class CharacterSelectScene extends Phaser.Scene {
       barFill.fillRoundedRect(cx - 24, attrY - 5, (176 * attr.value) / 10, 10, 5)
 
       this.add
-        .text(cx + 168, attrY, `${attr.value}`, uiText('18px', '#FFFFFF', true))
+        .text(cx + 168, attrY, `${attr.value}`, uiText('18px', '#FFFFFF', true, true))
         .setOrigin(0, 0.5)
 
       attrY += 32
@@ -216,7 +232,7 @@ export class CharacterSelectScene extends Phaser.Scene {
 
   private buildDifficultyRow(y: number) {
     const label = this.add
-      .text(490, y, 'AI DIFFICULTY', uiText('14px', '#97A5B9', true))
+      .text(490, y, 'AI DIFFICULTY', uiText('14px', '#97A5B9', true, true))
       .setOrigin(1, 0.5)
     tracked(label, 3)
 
@@ -229,7 +245,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     for (const opt of options) {
       const bg = this.add.graphics()
       const text = this.add
-        .text(opt.x, y, opt.label, uiText('15px', '#FFFFFF', true))
+        .text(opt.x, y, opt.label, uiText('15px', '#FFFFFF', true, true))
         .setOrigin(0.5)
       tracked(text, 3)
 
